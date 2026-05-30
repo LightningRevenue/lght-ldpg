@@ -6,6 +6,9 @@ import AdminAnalyticsExplorer, {
   type AnalyticsExplorerDay,
   type AnalyticsExplorerSession,
 } from './AdminAnalyticsExplorer';
+import SignatureAssetsManager, {
+  type SignatureAsset,
+} from './SignatureAssetsManager';
 import LogoutButton from './LogoutButton';
 
 export const metadata: Metadata = {
@@ -101,6 +104,19 @@ type AnalyticsExplorerRow = {
   event_metadata: Record<string, unknown> | null;
 };
 
+type SignatureAssetRow = {
+  id: string;
+  public_id: string;
+  name: string;
+  alt_text: string | null;
+  file_name: string;
+  content_type: string;
+  file_size: number;
+  display_width: number;
+  display_height: number | null;
+  created_at: Date;
+};
+
 function numberValue(value: string) {
   return Number(value) || 0;
 }
@@ -135,6 +151,7 @@ async function getDashboardData() {
     leadAttributionResult,
     dailyAnalyticsResult,
     analyticsExplorerResult,
+    signatureAssetsResult,
   ] = await Promise.all([
     pool.query<CountRow>(
       `
@@ -164,6 +181,8 @@ async function getDashboardData() {
         select 'Newsletter' as label, count(*)::text as count from ${schema}.newsletter_approved
         union all
         select 'Analytics events' as label, count(*)::text as count from ${schema}.analytics_events
+        union all
+        select 'Signature assets' as label, count(*)::text as count from ${schema}.signature_assets
       `
     ),
     pool.query<RecentLead>(
@@ -392,6 +411,24 @@ async function getDashboardData() {
         order by analytics_sessions.started_at desc, analytics_events.created_at asc
       `
     ),
+    pool.query<SignatureAssetRow>(
+      `
+        select
+          id,
+          public_id,
+          name,
+          alt_text,
+          file_name,
+          content_type,
+          file_size,
+          display_width,
+          display_height,
+          created_at
+        from ${schema}.signature_assets
+        order by created_at desc
+        limit 24
+      `
+    ),
   ]);
 
   const explorerSessionMap = new Map<string, AnalyticsExplorerSession>();
@@ -456,6 +493,19 @@ async function getDashboardData() {
       })
     ),
     analyticsExplorerSessions: Array.from(explorerSessionMap.values()),
+    signatureAssets: signatureAssetsResult.rows.map<SignatureAsset>(asset => ({
+      id: asset.id,
+      publicId: asset.public_id,
+      name: asset.name,
+      altText: asset.alt_text,
+      fileName: asset.file_name,
+      contentType: asset.content_type,
+      fileSize: asset.file_size,
+      displayWidth: asset.display_width,
+      displayHeight: asset.display_height,
+      createdAt: asset.created_at.toISOString(),
+      url: `/api/signature-assets/${asset.public_id}`,
+    })),
   };
 }
 
@@ -533,6 +583,8 @@ export default async function AdminPage() {
             sessions={dashboard.analyticsExplorerSessions}
           />
         </section>
+
+        <SignatureAssetsManager assets={dashboard.signatureAssets} />
 
         <div className="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
           <section className="rounded-[2rem] border border-black/10 bg-white p-4 sm:p-6">

@@ -4,11 +4,22 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 
+const languages = [
+  { code: 'en', label: 'English', shortLabel: 'EN', flag: '/languages/english.png' },
+  { code: 'ro', label: 'Romanian', shortLabel: 'RO', flag: '/languages/romanian.png' },
+  { code: 'it', label: 'Italian', shortLabel: 'IT', flag: '/languages/italian.webp' },
+  { code: 'es', label: 'Spanish', shortLabel: 'ES', flag: '/languages/spanish.webp' },
+];
+
+const languageStorageKey = 'lrvn_language';
+
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [mobileExpertiseOpen, setMobileExpertiseOpen] = useState(false);
+  const [languageOpen, setLanguageOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,6 +27,15 @@ export default function Navbar() {
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  useEffect(() => {
+    const storedLanguage = window.localStorage.getItem(languageStorageKey);
+    const language = languages.find(item => item.code === storedLanguage);
+
+    if (language) {
+      setSelectedLanguage(language);
+    }
   }, []);
 
   // Lock body scroll when mobile menu is open
@@ -34,6 +54,15 @@ export default function Navbar() {
     setMobileOpen(false);
     setMobileServicesOpen(false);
     setMobileExpertiseOpen(false);
+    setLanguageOpen(false);
+  };
+
+  const chooseLanguage = (code: string) => {
+    const language = languages.find(item => item.code === code) || languages[0];
+
+    setSelectedLanguage(language);
+    setLanguageOpen(false);
+    window.localStorage.setItem(languageStorageKey, language.code);
   };
 
   return (
@@ -193,7 +222,54 @@ export default function Navbar() {
           </nav>
 
           {/* CTA & Login */}
-          <div className="flex items-center justify-end gap-6 relative z-20 min-w-[64px] lg:min-w-[150px]">
+          <div className="flex items-center justify-end gap-3 relative z-20 min-w-[64px] lg:min-w-[230px]">
+            <div className="relative hidden lg:block">
+              <button
+                type="button"
+                onClick={() => setLanguageOpen(current => !current)}
+                className="flex items-center gap-2 rounded-full border border-black/10 bg-white/40 px-3 py-2 text-[13px] font-bold text-black/70 backdrop-blur-xl transition-colors hover:border-black/20 hover:text-black"
+                aria-label="Select language"
+              >
+                <Image
+                  src={selectedLanguage.flag}
+                  alt={selectedLanguage.label}
+                  width={22}
+                  height={22}
+                  className="h-5 w-5 rounded-full object-cover"
+                />
+                <span>{selectedLanguage.shortLabel}</span>
+                <svg className={`h-3.5 w-3.5 opacity-50 transition-transform ${languageOpen ? 'rotate-180' : ''}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+
+              {languageOpen && (
+                <div className="absolute right-0 top-[calc(100%+0.75rem)] w-52 rounded-2xl border border-black/10 bg-white/95 p-2 shadow-[0_16px_40px_-10px_rgba(0,0,0,0.12)] backdrop-blur-2xl">
+                  {languages.map(language => (
+                    <button
+                      key={language.code}
+                      type="button"
+                      onClick={() => chooseLanguage(language.code)}
+                      className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-bold transition-colors ${
+                        selectedLanguage.code === language.code
+                          ? 'bg-black text-white'
+                          : 'text-black/65 hover:bg-black/[0.04] hover:text-black'
+                      }`}
+                    >
+                      <Image
+                        src={language.flag}
+                        alt={language.label}
+                        width={24}
+                        height={24}
+                        className="h-6 w-6 rounded-full object-cover"
+                      />
+                      <span>{language.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <Link
               href="/contact"
               className="hidden lg:flex items-center justify-center px-6 py-2.5 text-[14px] font-semibold tracking-wide text-white bg-black rounded-full hover:scale-105 hover:bg-black/90 hover:shadow-lg transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap"
@@ -418,6 +494,37 @@ export default function Navbar() {
             >
               Contact
             </Link>
+
+            <div className="h-px bg-black/5"></div>
+
+            <div className="py-4">
+              <div className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-black/30">
+                Language
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                {languages.map(language => (
+                  <button
+                    key={language.code}
+                    type="button"
+                    onClick={() => chooseLanguage(language.code)}
+                    className={`flex items-center gap-2 rounded-2xl border px-3 py-3 text-sm font-bold transition-colors ${
+                      selectedLanguage.code === language.code
+                        ? 'border-black bg-black text-white'
+                        : 'border-black/10 bg-black/[0.03] text-black/65'
+                    }`}
+                  >
+                    <Image
+                      src={language.flag}
+                      alt={language.label}
+                      width={24}
+                      height={24}
+                      className="h-6 w-6 rounded-full object-cover"
+                    />
+                    <span>{language.shortLabel}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
         </div>
 

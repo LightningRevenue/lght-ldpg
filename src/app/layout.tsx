@@ -5,6 +5,9 @@ import SiteChrome from '@/components/SiteChrome';
 export const metadata: Metadata = {
   title: 'LightningRevenue - Premium Digital Agency',
   description: 'Minimalist, high-end digital marketing agency.',
+  verification: {
+    google: '7HXE5c4j9u2d7YzDmm0DXdWO6Ov1XICN9CTgzXNb_u4',
+  },
 };
 
 export default function RootLayout({

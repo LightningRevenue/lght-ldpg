@@ -6,6 +6,7 @@ import AnalyticsProvider from "@/components/AnalyticsProvider";
 import CookieConsent from "@/components/CookieConsent";
 import FloatingHelp from "@/components/FloatingHelp";
 import Footer from "@/components/Footer";
+import GoogleAnalyticsConsent from "@/components/GoogleAnalyticsConsent";
 import Navbar from "@/components/Navbar";
 
 export default function SiteChrome({ children }: { children: React.ReactNode }) {
@@ -23,6 +24,7 @@ export default function SiteChrome({ children }: { children: React.ReactNode }) 
       {children}
       <Footer />
       <AnalyticsProvider />
+      <GoogleAnalyticsConsent />
       <CookieConsent />
     </>
   );

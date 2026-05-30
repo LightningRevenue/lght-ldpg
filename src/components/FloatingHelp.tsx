@@ -1,70 +1,14 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-
-const helpData = [
-  {
-    serviceId: 'ppc',
-    serviceName: 'PPC Management',
-    serviceDesc: 'Data-driven pay-per-click scaling.',
-    painPoint: 'High ad spend with low conversion rates.',
-    outcome: 'Scale ROAS and decrease Cost Per Acquisition.',
-  },
-  {
-    serviceId: 'seo',
-    serviceName: 'SEO Optimization',
-    serviceDesc: 'Technical & content-driven optimization.',
-    painPoint: 'Competitors consistently rank higher on Google.',
-    outcome: 'Dominate niche search terms with high-intent traffic.',
-  },
-  {
-    serviceId: 'web',
-    serviceName: 'Web Development',
-    serviceDesc: 'High-performance marketing platforms.',
-    painPoint: 'Website is slow, hard to manage, or looks outdated.',
-    outcome: 'A blazing-fast, premium marketing site.',
-  },
-  {
-    serviceId: 'software',
-    serviceName: 'Software Development',
-    serviceDesc: 'Custom apps and internal tools.',
-    painPoint: 'Internal operations rely on manual, broken processes.',
-    outcome: 'Custom software that automates 90% of manual work.',
-  },
-  {
-    serviceId: 'smm',
-    serviceName: 'Social Media Management',
-    serviceDesc: 'Organic community building & growth.',
-    painPoint: 'Zero organic presence or community engagement.',
-    outcome: 'A highly engaged social media following.',
-  },
-  {
-    serviceId: 'uiux',
-    serviceName: 'UI/UX Design',
-    serviceDesc: 'Premium interface and experience design.',
-    painPoint: 'High bounce rates and confusing user journeys.',
-    outcome: 'A world-class user interface that drives conversions.',
-  },
-  {
-    serviceId: 'lead',
-    serviceName: 'Lead Generation',
-    serviceDesc: 'Automated B2B outreach systems.',
-    painPoint: 'Sales pipeline is empty, lacking predictable B2B leads.',
-    outcome: 'Automated meeting booking with qualified prospects.',
-  },
-  {
-    serviceId: 'sales',
-    serviceName: 'Sales Tools Set-Up',
-    serviceDesc: 'CRM and pipeline architecture.',
-    painPoint: 'Closing takes too long and CRM data is a mess.',
-    outcome: 'A crystal-clear CRM architecture and short sales cycles.',
-  }
-];
+import React, { useState } from 'react';
+import { helpData } from '@/lib/help-data';
 
 export default function FloatingHelp() {
   const [isOpen, setIsOpen] = useState(false);
   const [phase, setPhase] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   
   const [selectedPainPoints, setSelectedPainPoints] = useState<string[]>([]);
   const [selectedOutcomes, setSelectedOutcomes] = useState<string[]>([]);
@@ -87,9 +31,48 @@ export default function FloatingHelp() {
     setPhase(3);
   };
 
-  const handleSubmit = () => {
-    setIsSubmitted(true);
-    setPhase(5);
+  const handleSubmit = async () => {
+    if (isSubmitting) {
+      return;
+    }
+
+    setSubmitError("");
+
+    if (!contactInfo.name.trim() || !contactInfo.email.trim()) {
+      setSubmitError("Name and email are required.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/help-requests", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: contactInfo.name,
+          email: contactInfo.email,
+          company: contactInfo.company,
+          selectedPainPoints,
+          selectedOutcomes,
+          finalServices,
+        }),
+      });
+
+      if (!response.ok) {
+        const result = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(result?.error || "The request could not be submitted.");
+      }
+
+      setIsSubmitted(true);
+      setPhase(5);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "The request could not be submitted.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const resetAndClose = () => {
@@ -101,6 +84,8 @@ export default function FloatingHelp() {
       setSelectedOutcomes([]);
       setFinalServices([]);
       setContactInfo({ name: '', email: '', company: '' });
+      setSubmitError("");
+      setIsSubmitting(false);
     }, 300);
   };
 
@@ -109,10 +94,12 @@ export default function FloatingHelp() {
       {/* Floating Ribbon Button */}
       <button 
         onClick={() => setIsOpen(true)}
-        className="fixed left-0 top-1/2 -translate-y-1/2 z-50 bg-black text-white py-4 px-3 rounded-r-xl shadow-2xl hover:pl-4 hover:bg-black/90 transition-all duration-300 group flex flex-col items-center gap-3 border border-l-0 border-white/10"
+        aria-label="Open growth diagnostic"
+        className="fixed bottom-4 left-4 z-50 flex h-11 w-11 items-center justify-center rounded-full border border-white/10 bg-black text-white shadow-2xl transition-all duration-300 hover:scale-105 hover:bg-black/90 sm:left-0 sm:top-1/2 sm:h-auto sm:w-auto sm:-translate-y-1/2 sm:flex-col sm:gap-3 sm:rounded-l-none sm:rounded-r-xl sm:px-3 sm:py-4 sm:hover:scale-100 sm:hover:pl-4"
       >
-        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-        <span className="text-xs font-bold tracking-[0.15em] uppercase" style={{ writingMode: 'vertical-lr' }}>How can we help?</span>
+        <div className="absolute left-2 top-2 h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse sm:static"></div>
+        <span className="text-lg font-bold leading-none sm:hidden">?</span>
+        <span className="hidden text-xs font-bold uppercase tracking-[0.15em] sm:block" style={{ writingMode: 'vertical-lr' }}>How can we help?</span>
       </button>
 
       {/* Diagnostic Modal */}
@@ -258,6 +245,7 @@ export default function FloatingHelp() {
                         placeholder="Full Name" 
                         value={contactInfo.name}
                         onChange={(e) => setContactInfo({...contactInfo, name: e.target.value})}
+                        required
                         className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
                       />
                       <input 
@@ -265,6 +253,7 @@ export default function FloatingHelp() {
                         placeholder="Work Email" 
                         value={contactInfo.email}
                         onChange={(e) => setContactInfo({...contactInfo, email: e.target.value})}
+                        required
                         className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
                       />
                       <input 
@@ -274,6 +263,9 @@ export default function FloatingHelp() {
                         onChange={(e) => setContactInfo({...contactInfo, company: e.target.value})}
                         className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
                       />
+                      {submitError && (
+                        <p className="text-sm text-red-600 text-center">{submitError}</p>
+                      )}
                     </div>
                   </div>
                 )}
@@ -381,9 +373,10 @@ export default function FloatingHelp() {
               ) : phase === 4 ? (
                 <button 
                   onClick={handleSubmit}
-                  className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-emerald-600 transition-colors shadow-lg"
+                  disabled={isSubmitting}
+                  className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-emerald-600 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Submit Request
+                  {isSubmitting ? "Submitting..." : "Submit Request"}
                 </button>
               ) : (
                 <button 

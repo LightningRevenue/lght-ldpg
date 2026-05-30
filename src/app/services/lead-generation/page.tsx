@@ -7,8 +7,9 @@ import LeadGenContact from '@/components/leadgen-components/LeadGenContact';
 import LeadGenFAQ from '@/components/leadgen-components/LeadGenFAQ';
 
 export const metadata = {
-  title: "B2B Lead Generation | LRVN",
-  description: "Automated, high-volume outbound systems and sales infrastructure.",
+  title: 'B2B Lead Generation | LightningRevenue',
+  description:
+    'Automated, high-volume outbound systems and sales infrastructure.',
 };
 
 export default function LeadGenerationPage() {

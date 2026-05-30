@@ -7,8 +7,8 @@ import SMMContact from '@/components/smm-components/SMMContact';
 import SMMFAQ from '@/components/smm-components/SMMFAQ';
 
 export const metadata = {
-  title: "Social Media Management | LRVN",
-  description: "Building viral ecosystems and die-hard communities.",
+  title: 'Social Media Management | LightningRevenue',
+  description: 'Building viral ecosystems and die-hard communities.',
 };
 
 export default function SMMPage() {

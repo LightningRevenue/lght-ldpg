@@ -1,66 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
-import Link from 'next/link';
-
-const helpData = [
-  {
-    serviceId: 'ppc',
-    serviceName: 'PPC Management',
-    serviceDesc: 'Data-driven pay-per-click scaling.',
-    painPoint: 'High ad spend with low conversion rates.',
-    outcome: 'Scale ROAS and decrease Cost Per Acquisition.',
-  },
-  {
-    serviceId: 'seo',
-    serviceName: 'SEO Optimization',
-    serviceDesc: 'Technical & content-driven optimization.',
-    painPoint: 'Competitors consistently rank higher on Google.',
-    outcome: 'Dominate niche search terms with high-intent traffic.',
-  },
-  {
-    serviceId: 'web',
-    serviceName: 'Web Development',
-    serviceDesc: 'High-performance marketing platforms.',
-    painPoint: 'Website is slow, hard to manage, or looks outdated.',
-    outcome: 'A blazing-fast, premium marketing site.',
-  },
-  {
-    serviceId: 'software',
-    serviceName: 'Software Development',
-    serviceDesc: 'Custom apps and internal tools.',
-    painPoint: 'Internal operations rely on manual, broken processes.',
-    outcome: 'Custom software that automates 90% of manual work.',
-  },
-  {
-    serviceId: 'smm',
-    serviceName: 'Social Media Management',
-    serviceDesc: 'Organic community building & growth.',
-    painPoint: 'Zero organic presence or community engagement.',
-    outcome: 'A highly engaged social media following.',
-  },
-  {
-    serviceId: 'uiux',
-    serviceName: 'UI/UX Design',
-    serviceDesc: 'Premium interface and experience design.',
-    painPoint: 'High bounce rates and confusing user journeys.',
-    outcome: 'A world-class user interface that drives conversions.',
-  },
-  {
-    serviceId: 'lead',
-    serviceName: 'Lead Generation',
-    serviceDesc: 'Automated B2B outreach systems.',
-    painPoint: 'Sales pipeline is empty, lacking predictable B2B leads.',
-    outcome: 'Automated meeting booking with qualified prospects.',
-  },
-  {
-    serviceId: 'sales',
-    serviceName: 'Sales Tools Set-Up',
-    serviceDesc: 'CRM and pipeline architecture.',
-    painPoint: 'Closing takes too long and CRM data is a mess.',
-    outcome: 'A crystal-clear CRM architecture and short sales cycles.',
-  }
-];
+import { helpData } from '@/lib/help-data';
 
 const expertiseOptions = [
   { id: 'sla', name: 'SLA', desc: 'Strict guaranteed performance metrics.', details: 'Financially-backed guarantees ensuring target KPIs, uptime, and minimum delivery thresholds are rigorously met.' },
@@ -78,9 +19,14 @@ const foundationServices = [
   { id: 'f-smm', name: 'Basic SMM', desc: '2 organic posts per week across 2 social channels (e.g., LinkedIn & Instagram), plus a monthly performance report.' },
 ];
 
+type ActiveModal = 'none' | 'custom' | 'foundation' | 'momentum' | 'apex';
+
 export default function Packages() {
-  const [activeModal, setActiveModal] = useState<'none' | 'custom' | 'foundation'>('none');
+  const [activeModal, setActiveModal] = useState<ActiveModal>('none');
   const [phase, setPhase] = useState(1);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
   
   // Custom Form State
   const [selectedPainPoints, setSelectedPainPoints] = useState<string[]>([]);
@@ -93,6 +39,13 @@ export default function Packages() {
 
   // Contact State (Shared)
   const [contactInfo, setContactInfo] = useState({ name: '', email: '', company: '' });
+
+  const openModal = (modal: Exclude<ActiveModal, 'none'>) => {
+    setSubmitError("");
+    setIsSubmitted(false);
+    setPhase(1);
+    setActiveModal(modal);
+  };
 
   const toggleSelection = (id: string, list: string[], setList: React.Dispatch<React.SetStateAction<string[]>>) => {
     if (list.includes(id)) {
@@ -112,6 +65,9 @@ export default function Packages() {
     setActiveModal('none');
     setTimeout(() => {
       setPhase(1);
+      setIsSubmitted(false);
+      setIsSubmitting(false);
+      setSubmitError("");
       setSelectedPainPoints([]);
       setSelectedOutcomes([]);
       setSelectedServices([]);
@@ -119,6 +75,52 @@ export default function Packages() {
       setSelectedFoundationServices(foundationServices.map(s => s.id));
       setContactInfo({ name: '', email: '', company: '' });
     }, 300);
+  };
+
+  const submitEngagementModel = async () => {
+    if (isSubmitting || activeModal === 'none') {
+      return;
+    }
+
+    setSubmitError("");
+
+    if (!contactInfo.name.trim() || !contactInfo.email.trim()) {
+      setSubmitError("Name and email are required.");
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/engagement-models", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          model: activeModal,
+          name: contactInfo.name,
+          email: contactInfo.email,
+          company: contactInfo.company,
+          selectedPainPoints,
+          selectedOutcomes,
+          selectedServices,
+          selectedExpertise,
+          selectedFoundationServices,
+        }),
+      });
+
+      if (!response.ok) {
+        const result = (await response.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(result?.error || "The request could not be submitted.");
+      }
+
+      setIsSubmitted(true);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "The request could not be submitted.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -145,7 +147,7 @@ export default function Packages() {
               <p className="text-black/60 font-light mb-12 flex-1 leading-relaxed">
                 Essential digital infrastructure and core marketing initiatives designed for emerging brands ready to enter the market.
               </p>
-              <button onClick={() => setActiveModal('foundation')} className="w-full py-3.5 px-6 rounded-full border border-black/20 text-black text-center text-[14px] font-medium hover:bg-black hover:text-white hover:border-black transition-all duration-300">
+              <button onClick={() => openModal('foundation')} className="w-full py-3.5 px-6 rounded-full border border-black/20 text-black text-center text-[14px] font-medium hover:bg-black hover:text-white hover:border-black transition-all duration-300">
                 Select Foundation
               </button>
             </div>
@@ -158,9 +160,9 @@ export default function Packages() {
               <p className="text-white/70 font-light mb-12 flex-1 leading-relaxed relative z-10">
                 Aggressive growth strategies, advanced web development, and data-driven PPC scaling for operations gaining traction.
               </p>
-              <Link href="/contact" className="w-full py-3.5 px-6 rounded-full bg-white text-black text-center text-[14px] font-semibold hover:bg-white/90 hover:shadow-lg transition-all duration-300 relative z-10">
+              <button onClick={() => openModal('momentum')} className="w-full py-3.5 px-6 rounded-full bg-white text-black text-center text-[14px] font-semibold hover:bg-white/90 hover:shadow-lg transition-all duration-300 relative z-10">
                 Select Momentum
-              </Link>
+              </button>
             </div>
 
             {/* Apex */}
@@ -170,9 +172,9 @@ export default function Packages() {
               <p className="text-black/60 font-light mb-12 flex-1 leading-relaxed">
                 Enterprise-grade solutions, omni-channel dominance, and dedicated elite teams for market leaders.
               </p>
-              <Link href="/contact" className="w-full py-3.5 px-6 rounded-full border border-black/20 text-black text-center text-[14px] font-medium hover:bg-black hover:text-white hover:border-black transition-all duration-300">
+              <button onClick={() => openModal('apex')} className="w-full py-3.5 px-6 rounded-full border border-black/20 text-black text-center text-[14px] font-medium hover:bg-black hover:text-white hover:border-black transition-all duration-300">
                 Select Apex
-              </Link>
+              </button>
             </div>
           </div>
 
@@ -186,7 +188,7 @@ export default function Packages() {
               </p>
             </div>
             
-            <button onClick={() => setActiveModal('custom')} className="shrink-0 flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#fafafa] border border-black/10 text-black group-hover:bg-black group-hover:text-white group-hover:border-black transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] focus:outline-none">
+            <button onClick={() => openModal('custom')} className="shrink-0 flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#fafafa] border border-black/10 text-black group-hover:bg-black group-hover:text-white group-hover:border-black transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] focus:outline-none">
               <svg className="w-6 h-6 sm:w-8 sm:h-8 -rotate-45 group-hover:rotate-0 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M14 5l7 7m0 0l-7 7m7-7H3" />
               </svg>
@@ -362,32 +364,43 @@ export default function Packages() {
                 {/* PHASE 5: Contact Info */}
                 {phase === 5 && (
                   <div className="animate-fade-in-up flex-1 flex flex-col justify-center">
-                    <h3 className="text-3xl font-medium mb-2 text-black text-center">Almost done.</h3>
-                    <p className="text-black/50 font-light mb-10 text-center">Where should we send the proposed framework?</p>
+                    <h3 className="text-3xl font-medium mb-2 text-black text-center">
+                      {isSubmitted ? "Request submitted" : "Almost done."}
+                    </h3>
+                    <p className="text-black/50 font-light mb-10 text-center">
+                      {isSubmitted ? "A strategist will review your custom package request and follow up." : "Where should we send the proposed framework?"}
+                    </p>
                     
-                    <div className="flex flex-col gap-5 max-w-md mx-auto w-full">
-                      <input 
-                        type="text" 
-                        placeholder="Full Name" 
-                        value={contactInfo.name}
-                        onChange={(e) => setContactInfo({...contactInfo, name: e.target.value})}
-                        className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
-                      />
-                      <input 
-                        type="email" 
-                        placeholder="Work Email" 
-                        value={contactInfo.email}
-                        onChange={(e) => setContactInfo({...contactInfo, email: e.target.value})}
-                        className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
-                      />
-                      <input 
-                        type="text" 
-                        placeholder="Company URL" 
-                        value={contactInfo.company}
-                        onChange={(e) => setContactInfo({...contactInfo, company: e.target.value})}
-                        className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
-                      />
-                    </div>
+                    {!isSubmitted && (
+                      <div className="flex flex-col gap-5 max-w-md mx-auto w-full">
+                        <input 
+                          type="text" 
+                          placeholder="Full Name" 
+                          value={contactInfo.name}
+                          onChange={(e) => setContactInfo({...contactInfo, name: e.target.value})}
+                          required
+                          className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
+                        />
+                        <input 
+                          type="email" 
+                          placeholder="Work Email" 
+                          value={contactInfo.email}
+                          onChange={(e) => setContactInfo({...contactInfo, email: e.target.value})}
+                          required
+                          className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
+                        />
+                        <input 
+                          type="text" 
+                          placeholder="Company URL" 
+                          value={contactInfo.company}
+                          onChange={(e) => setContactInfo({...contactInfo, company: e.target.value})}
+                          className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
+                        />
+                        {submitError && (
+                          <p className="text-sm text-red-600 text-center">{submitError}</p>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -435,13 +448,11 @@ export default function Packages() {
                 </button>
               ) : (
                 <button 
-                  onClick={() => {
-                    alert('Submission received! (Demo)');
-                    resetAndClose();
-                  }}
-                  className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-emerald-600 transition-colors shadow-lg"
+                  onClick={isSubmitted ? resetAndClose : submitEngagementModel}
+                  disabled={isSubmitting}
+                  className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-emerald-600 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Submit Request
+                  {isSubmitted ? "Done" : isSubmitting ? "Submitting..." : "Submit Request"}
                 </button>
               )}
             </div>
@@ -514,32 +525,43 @@ export default function Packages() {
                 {/* PHASE 2: Contact Info */}
                 {phase === 2 && (
                   <div className="animate-fade-in-up flex-1 flex flex-col justify-center">
-                    <h3 className="text-3xl font-medium mb-2 text-black text-center">Ready to launch?</h3>
-                    <p className="text-black/50 font-light mb-10 text-center">Enter your details and our team will prepare your Foundation setup.</p>
+                    <h3 className="text-3xl font-medium mb-2 text-black text-center">
+                      {isSubmitted ? "Request submitted" : "Ready to launch?"}
+                    </h3>
+                    <p className="text-black/50 font-light mb-10 text-center">
+                      {isSubmitted ? "Your Foundation request was saved. Our team will prepare the setup." : "Enter your details and our team will prepare your Foundation setup."}
+                    </p>
                     
-                    <div className="flex flex-col gap-5 max-w-md mx-auto w-full">
-                      <input 
-                        type="text" 
-                        placeholder="Full Name" 
-                        value={contactInfo.name}
-                        onChange={(e) => setContactInfo({...contactInfo, name: e.target.value})}
-                        className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
-                      />
-                      <input 
-                        type="email" 
-                        placeholder="Work Email" 
-                        value={contactInfo.email}
-                        onChange={(e) => setContactInfo({...contactInfo, email: e.target.value})}
-                        className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
-                      />
-                      <input 
-                        type="text" 
-                        placeholder="Company URL" 
-                        value={contactInfo.company}
-                        onChange={(e) => setContactInfo({...contactInfo, company: e.target.value})}
-                        className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
-                      />
-                    </div>
+                    {!isSubmitted && (
+                      <div className="flex flex-col gap-5 max-w-md mx-auto w-full">
+                        <input 
+                          type="text" 
+                          placeholder="Full Name" 
+                          value={contactInfo.name}
+                          onChange={(e) => setContactInfo({...contactInfo, name: e.target.value})}
+                          required
+                          className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
+                        />
+                        <input 
+                          type="email" 
+                          placeholder="Work Email" 
+                          value={contactInfo.email}
+                          onChange={(e) => setContactInfo({...contactInfo, email: e.target.value})}
+                          required
+                          className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
+                        />
+                        <input 
+                          type="text" 
+                          placeholder="Company URL" 
+                          value={contactInfo.company}
+                          onChange={(e) => setContactInfo({...contactInfo, company: e.target.value})}
+                          className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
+                        />
+                        {submitError && (
+                          <p className="text-sm text-red-600 text-center">{submitError}</p>
+                        )}
+                      </div>
+                    )}
                   </div>
                 )}
 
@@ -568,17 +590,86 @@ export default function Packages() {
                 </button>
               ) : (
                 <button 
-                  onClick={() => {
-                    alert('Submission received! (Demo)');
-                    resetAndClose();
-                  }}
-                  className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-emerald-600 transition-colors shadow-lg"
+                  onClick={isSubmitted ? resetAndClose : submitEngagementModel}
+                  disabled={isSubmitting}
+                  className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-emerald-600 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  Submit Request
+                  {isSubmitted ? "Done" : isSubmitting ? "Submitting..." : "Submit Request"}
                 </button>
               )}
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {(activeModal === 'momentum' || activeModal === 'apex') && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-md p-4 sm:p-6 transition-opacity">
+          <div className="bg-[#fafafa] w-full max-w-2xl rounded-[2rem] overflow-hidden relative flex flex-col shadow-2xl animate-fade-in-up">
+            <div className="flex justify-between items-center px-8 py-6 border-b border-black/5 bg-white z-10 shrink-0">
+              <div className="flex items-center gap-4">
+                <span className="font-bold tracking-tight text-sm uppercase text-black">
+                  {activeModal === 'momentum' ? 'Momentum Request' : 'Apex Request'}
+                </span>
+              </div>
+              <button onClick={resetAndClose} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 transition-colors text-black/50 hover:text-black">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+            </div>
+
+            <div className="p-8 sm:p-12">
+              <h3 className="text-3xl font-medium mb-2 text-black text-center">
+                {isSubmitted ? "Request submitted" : `Start with ${activeModal === 'momentum' ? 'Momentum' : 'Apex'}.`}
+              </h3>
+              <p className="text-black/50 font-light mb-10 text-center">
+                {isSubmitted
+                  ? "Your engagement request was saved. Our team will follow up with next steps."
+                  : "Leave your details and our team will prepare the right engagement framework."}
+              </p>
+
+              {!isSubmitted && (
+                <div className="flex flex-col gap-5 max-w-md mx-auto w-full">
+                  <input 
+                    type="text" 
+                    placeholder="Full Name" 
+                    value={contactInfo.name}
+                    onChange={(e) => setContactInfo({...contactInfo, name: e.target.value})}
+                    required
+                    className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
+                  />
+                  <input 
+                    type="email" 
+                    placeholder="Work Email" 
+                    value={contactInfo.email}
+                    onChange={(e) => setContactInfo({...contactInfo, email: e.target.value})}
+                    required
+                    className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
+                  />
+                  <input 
+                    type="text" 
+                    placeholder="Company URL" 
+                    value={contactInfo.company}
+                    onChange={(e) => setContactInfo({...contactInfo, company: e.target.value})}
+                    className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
+                  />
+                  {submitError && (
+                    <p className="text-sm text-red-600 text-center">{submitError}</p>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="p-6 border-t border-black/5 bg-white shrink-0 flex items-center justify-end">
+              <button 
+                onClick={isSubmitted ? resetAndClose : submitEngagementModel}
+                disabled={isSubmitting}
+                className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-emerald-600 transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSubmitted ? "Done" : isSubmitting ? "Submitting..." : "Submit Request"}
+              </button>
+            </div>
           </div>
         </div>
       )}

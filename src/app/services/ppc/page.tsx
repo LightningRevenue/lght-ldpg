@@ -7,8 +7,8 @@ import PPCContact from '@/components/ppc-components/PPCContact';
 import PPCFAQ from '@/components/ppc-components/PPCFAQ';
 
 export const metadata = {
-  title: "PPC Management | LRVN",
-  description: "Data-Driven PPC Scaling and Performance Marketing.",
+  title: 'PPC Management | LightningRevenue',
+  description: 'Data-Driven PPC Scaling and Performance Marketing.',
 };
 
 export default function PPCPage() {

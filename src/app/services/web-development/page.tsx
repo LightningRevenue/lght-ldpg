@@ -7,8 +7,8 @@ import DevContact from '@/components/dev-components/DevContact';
 import DevFAQ from '@/components/dev-components/DevFAQ';
 
 export const metadata = {
-  title: "Web Design & Development | LRVN",
-  description: "High-performance web applications and marketing sites.",
+  title: 'Web Design & Development | LightningRevenue',
+  description: 'High-performance web applications and marketing sites.',
 };
 
 export default function WebDevelopmentPage() {

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from 'react';
+import { submitServiceRequest } from '@/lib/service-request-client';
 
 export default function LeadGenContact() {
   const [phase, setPhase] = useState(1);
@@ -11,11 +12,25 @@ export default function LeadGenContact() {
     name: '',
     email: '',
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleSubmit = () => {
-    alert("Architecture Plan request submitted! We'll be in touch shortly.");
-    setPhase(1);
-    setFormData({ challenge: '', volume: '', techStack: '', name: '', email: '' });
+  const handleSubmit = async () => {
+    if (isSubmitting) return;
+    setSubmitError("");
+    setIsSubmitting(true);
+
+    try {
+      await submitServiceRequest({ service: "lead-generation", ...formData });
+      setIsSubmitted(true);
+      setPhase(1);
+      setFormData({ challenge: '', volume: '', techStack: '', name: '', email: '' });
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "The request could not be submitted.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -128,6 +143,12 @@ export default function LeadGenContact() {
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
                       className="w-full p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-[#2f5b7c] text-black placeholder:text-black/30 text-sm"
                     />
+                    {submitError && (
+                      <p className="text-sm text-red-600">{submitError}</p>
+                    )}
+                    {isSubmitted && (
+                      <p className="text-sm text-emerald-600">Request submitted.</p>
+                    )}
                   </div>
                 </div>
               )}
@@ -159,10 +180,10 @@ export default function LeadGenContact() {
             ) : (
               <button 
                 onClick={handleSubmit}
-                disabled={!formData.name || !formData.email}
+                disabled={!formData.name || !formData.email || isSubmitting}
                 className="px-8 py-3 bg-[#2f5b7c] text-white rounded-full text-sm font-medium hover:bg-black transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Submit Request
+                {isSubmitting ? "Submitting..." : "Submit Request"}
               </button>
             )}
           </div>

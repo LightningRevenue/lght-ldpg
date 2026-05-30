@@ -7,8 +7,8 @@ import SoftwareContact from '@/components/software-components/SoftwareContact';
 import SoftwareFAQ from '@/components/software-components/SoftwareFAQ';
 
 export const metadata = {
-  title: "Custom Software Engineering | LRVN",
-  description: "Bespoke software applications and scalable architectures.",
+  title: 'Custom Software Engineering | LightningRevenue',
+  description: 'Bespoke software applications and scalable architectures.',
 };
 
 export default function SoftwareDevelopmentPage() {

@@ -7,8 +7,8 @@ import SEOContact from '@/components/seo-components/SEOContact';
 import SEOFAQ from '@/components/seo-components/SEOFAQ';
 
 export const metadata = {
-  title: "SEO Optimization | LRVN",
-  description: "Technical SEO and organic growth architecture.",
+  title: 'SEO Optimization | LightningRevenue',
+  description: 'Technical SEO and organic growth architecture.',
 };
 
 export default function SEOPage() {

@@ -7,8 +7,9 @@ import UIUXContact from '@/components/ui-ux-components/UIUXContact';
 import UIUXFAQ from '@/components/ui-ux-components/UIUXFAQ';
 
 export const metadata = {
-  title: "UI/UX Design | LRVN",
-  description: "Marrying world-class aesthetics with frictionless user journeys.",
+  title: 'UI/UX Design | LightningRevenue',
+  description:
+    'Marrying world-class aesthetics with frictionless user journeys.',
 };
 
 export default function UIUXPage() {

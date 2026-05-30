@@ -1,23 +1,10 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import FloatingHelp from "@/components/FloatingHelp";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import type { Metadata } from 'next';
+import './globals.css';
+import SiteChrome from '@/components/SiteChrome';
 
 export const metadata: Metadata = {
-  title: "LRVN - Premium Digital Agency",
-  description: "Minimalist, high-end digital marketing agency.",
+  title: 'LightningRevenue - Premium Digital Agency',
+  description: 'Minimalist, high-end digital marketing agency.',
 };
 
 export default function RootLayout({
@@ -26,15 +13,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
-    >
+    <html lang="en" className="h-full antialiased">
       <body className="min-h-full flex flex-col relative">
-        <Navbar />
-        <FloatingHelp />
-        {children}
-        <Footer />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

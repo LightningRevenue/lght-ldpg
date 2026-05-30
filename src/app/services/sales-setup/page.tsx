@@ -7,8 +7,9 @@ import SalesSetupContact from '@/components/sales-setup-components/SalesSetupCon
 import SalesSetupFAQ from '@/components/sales-setup-components/SalesSetupFAQ';
 
 export const metadata = {
-  title: "CRM & Sales Operations | LRVN",
-  description: "Bulletproof DNS configurations and fully automated CRM pipelines.",
+  title: 'CRM & Sales Operations | LightningRevenue',
+  description:
+    'Bulletproof DNS configurations and fully automated CRM pipelines.',
 };
 
 export default function SalesSetupPage() {

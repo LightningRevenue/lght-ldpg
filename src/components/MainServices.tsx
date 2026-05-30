@@ -1,24 +1,29 @@
 import React from 'react';
+import Link from 'next/link';
 
 const services = [
   {
     number: '01',
     title: 'PPC',
+    href: '/services/ppc',
     description: 'Data-driven pay-per-click campaigns designed to maximize ROI, targeting the right audience at the perfect moment for your brand.',
   },
   {
     number: '02',
     title: 'Web Development',
+    href: '/services/web-development',
     description: 'Ultra-fast, meticulously designed websites tailored for conversion, merging aesthetics with high-performance architectures.',
   },
   {
     number: '03',
     title: 'Software Development',
+    href: '/services/software-development',
     description: 'Custom scalable applications and internal tools built from the ground up to solve complex business challenges securely.',
   },
   {
     number: '04',
     title: 'On-Demand Lead Generation Systems',
+    href: '/services/lead-generation',
     description: 'Automated, predictable inbound lead engines that feed your sales pipeline 24/7 without manual prospecting.',
   }
 ];
@@ -34,15 +39,15 @@ export default function MainServices() {
             <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-black mb-4">Core Services.</h2>
             <p className="text-slate-500 font-light max-w-md">Our focused expertise to accelerate your digital growth and operational efficiency.</p>
           </div>
-          <button className="text-[13px] font-bold uppercase tracking-wider text-black border-b border-black pb-1 hover:text-black/60 transition-colors">
+          <Link href="/contact" className="text-[13px] font-bold uppercase tracking-wider text-black border-b border-black pb-1 hover:text-black/60 transition-colors">
             View All Capabilities
-          </button>
+          </Link>
         </div>
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
           {services.map((service, index) => (
-            <div key={index} className="group cursor-pointer">
+            <Link key={service.href} href={service.href} className="group block cursor-pointer">
               <div className="border-t border-black/10 pt-6 transition-colors duration-500 group-hover:border-black/40">
                 <div className="flex items-start justify-between mb-8">
                   <h3 className="text-2xl sm:text-3xl font-medium tracking-tight text-black">
@@ -63,7 +68,7 @@ export default function MainServices() {
                   </svg>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 

@@ -1,31 +1,21 @@
+'use client';
+
 import React from 'react';
-
-const painPoints = [
-  'Slow, bloated templates that ruin user experience and kill conversion rates.',
-  'Spaghetti code that breaks every time you try to add a simple new feature.',
-  'Beautiful designs that completely ignore SEO and technical fundamentals.',
-  'Freelancers who go silent for weeks and miss critical launch deadlines.',
-];
-
-const outcomes = [
-  'Lightning-fast Next.js architectures built for sub-second page loads.',
-  'Clean, modular codebases that scale effortlessly as your business grows.',
-  'Pixel-perfect implementations where design, performance, and SEO coexist.',
-  'Transparent, agile sprints with senior engineers communicating daily.',
-];
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/lib/i18n';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 
 export default function DevPainPoints() {
+  const t = getServicesDictionary(getLanguageFromPathname(usePathname())).webDevelopment.painPoints;
   return (
     <section className="relative z-10 py-32 px-6 bg-[#fafafa] w-full border-t border-black/5 rounded-t-[3rem] sm:rounded-t-[4rem] shadow-[0_-20px_40px_rgba(0,0,0,0.03)]">
       <div className="max-w-7xl mx-auto">
         <div className="mb-16 text-center sm:text-left">
           <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-black mb-4">
-            From Templates to Architecture.
+            {t.title}
           </h2>
           <p className="text-black/50 font-light text-lg max-w-2xl">
-            Most websites are just digital brochures built on slow, outdated
-            frameworks. We engineer high-performance applications that drive
-            actual business outcomes.
+            {t.description}
           </p>
         </div>
 
@@ -49,12 +39,12 @@ export default function DevPainPoints() {
                 </svg>
               </div>
               <h3 className="text-2xl font-medium text-black/80">
-                Common Reality
+                {t.realityTitle}
               </h3>
             </div>
 
             <div className="flex flex-col gap-6 flex-1">
-              {painPoints.map((point, idx) => (
+              {t.painPoints.map((point, idx) => (
                 <div key={idx} className="flex items-start gap-4 group">
                   <div className="w-6 h-6 rounded-full border border-black/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:border-black/30 transition-colors">
                     <span className="w-1.5 h-1.5 bg-black/20 rounded-full"></span>
@@ -88,12 +78,12 @@ export default function DevPainPoints() {
                 </svg>
               </div>
               <h3 className="text-2xl font-medium text-white">
-                The LightningRevenue Standard
+                {t.standardTitle}
               </h3>
             </div>
 
             <div className="relative z-10 flex flex-col gap-6 flex-1">
-              {outcomes.map((outcome, idx) => (
+              {t.outcomes.map((outcome, idx) => (
                 <div key={idx} className="flex items-start gap-4 group">
                   <div className="w-6 h-6 rounded-full border border-[#2f5b7c]/50 bg-[#2f5b7c]/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-[#2f5b7c]/30 transition-colors">
                     <span className="w-1.5 h-1.5 bg-white rounded-full"></span>

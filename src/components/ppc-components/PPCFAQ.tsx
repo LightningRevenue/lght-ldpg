@@ -1,38 +1,23 @@
 "use client";
 
 import React, { useState } from 'react';
-
-const ppcFaqs = [
-  {
-    question: "How much budget do I need to start?",
-    answer: "We typically require a minimum monthly ad spend of $5,000. This ensures we can gather enough statistical significance for our A/B tests and provide the advertising algorithms with enough data to optimize efficiently."
-  },
-  {
-    question: "How long until we see a positive ROAS?",
-    answer: "While we often see quick wins within the first 14 days due to structural fixes (like pausing bleeding keywords), true algorithmic maturity and scaled profitability typically occur between days 45 and 60."
-  },
-  {
-    question: "Do you manage the creative assets too?",
-    answer: "Yes. We don't just manage bids. Our team includes performance copywriters and designers who build dozens of ad variations to feed into our continuous testing protocols, ensuring your message always matches search intent."
-  },
-  {
-    question: "What happens if a campaign underperforms?",
-    answer: "We don't do 'set and forget'. Our predictive scripts and daily manual checks mean underperforming ads are identified and paused before they drain budget. Funds are then immediately reallocated to winning variations."
-  }
-];
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/lib/i18n';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 
 export default function PPCFAQ() {
+  const t = getServicesDictionary(getLanguageFromPathname(usePathname())).ppc.faq;
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
     <section className="relative w-full bg-[#fafafa] z-10 py-32 px-6">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-black mb-16 text-center">
-          PPC Logistics.
+          {t.title}
         </h2>
 
         <div className="flex flex-col border-t border-black/10">
-          {ppcFaqs.map((faq, index) => {
+          {t.items.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
               <div key={index} className="border-b border-black/10">

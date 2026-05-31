@@ -1,38 +1,23 @@
 "use client";
 
 import React, { useState } from 'react';
-
-const smmFaqs = [
-  {
-    question: "Do you shoot the video content?",
-    answer: "Yes. Depending on your package, we either deploy creative directors to shoot on-site, or we set up remote recording studios for your internal Subject Matter Experts (SMEs) and handle all post-production."
-  },
-  {
-    question: "How many times a week do you post?",
-    answer: "Volume is dictated by the specific algorithm. TikTok and Shorts require high volume (1-3x daily), while B2B platforms like LinkedIn require extreme depth and quality (3-5x weekly). We optimize for reach, not an arbitrary quota."
-  },
-  {
-    question: "Can we approve posts before they go live?",
-    answer: "Yes. We use collaborative approval workflows through tools like Frame.io and Sprout Social. You get a completely zero-friction sign-off process on all copy and creative before it hits the feed."
-  },
-  {
-    question: "How long until we go viral?",
-    answer: "Virality is a byproduct of relentless consistency. You should expect strong baseline follower growth and engagement within 30 days, with major 'breakout' algorithmic moments typically occurring between months 3 and 6."
-  }
-];
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/i18n/config';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 
 export default function SMMFAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const t = getServicesDictionary(getLanguageFromPathname(usePathname())).smm.faq;
 
   return (
     <section className="relative w-full bg-[#fafafa] z-10 py-32 px-6">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-black mb-16 text-center">
-          Social Logistics.
+          {t.title}
         </h2>
 
         <div className="flex flex-col border-t border-black/10">
-          {smmFaqs.map((faq, index) => {
+          {t.items.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
               <div key={index} className="border-b border-black/10">

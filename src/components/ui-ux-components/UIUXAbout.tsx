@@ -1,4 +1,9 @@
+"use client";
+
 import React from 'react';
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/i18n/config';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 
 const uiuxInfo = [
   {
@@ -124,39 +129,43 @@ const uiuxInfo = [
 ];
 
 export default function UIUXAbout() {
+  const t = getServicesDictionary(getLanguageFromPathname(usePathname())).uiUx.about;
+
   return (
     <section className="relative z-10 py-32 px-6 bg-white w-full">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
         {/* Section Header */}
         <div className="text-center mb-20 max-w-3xl">
           <h2 className="text-4xl sm:text-5xl font-medium tracking-tight text-black mb-6">
-            The Anatomy of Elite UI/UX.
+            {t.title}
           </h2>
           <p className="text-black/50 font-light text-lg">
-            Every pixel serves a purpose. We combine psychological principles
-            with rigorous data analysis to build interfaces that feel effortless
-            and convert ruthlessly.
+            {t.description}
           </p>
         </div>
 
         {/* 6 Grid Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mb-32">
-          {uiuxInfo.map((item, idx) => (
-            <div
-              key={idx}
-              className="p-8 sm:p-10 rounded-3xl border border-black/10 bg-[#fafafa] hover:bg-white hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:border-black/20 transition-all duration-500 flex flex-col group"
-            >
-              <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
-                {item.icon}
+          {uiuxInfo.map((item, idx) => {
+            const copy = t.cards[idx] || item;
+
+            return (
+              <div
+                key={idx}
+                className="p-8 sm:p-10 rounded-3xl border border-black/10 bg-[#fafafa] hover:bg-white hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:border-black/20 transition-all duration-500 flex flex-col group"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-black text-white flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                  {item.icon}
+                </div>
+                <h3 className="text-xl font-medium text-black mb-3">
+                  {copy.title}
+                </h3>
+                <p className="text-black/60 font-light leading-relaxed text-sm">
+                  {copy.desc}
+                </p>
               </div>
-              <h3 className="text-xl font-medium text-black mb-3">
-                {item.title}
-              </h3>
-              <p className="text-black/60 font-light leading-relaxed text-sm">
-                {item.desc}
-              </p>
-            </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Highlight / Growth Stat */}
@@ -167,41 +176,33 @@ export default function UIUXAbout() {
 
           <div className="relative z-10 flex-1">
             <div className="text-xs font-bold text-white/50 mb-6 uppercase tracking-[0.2em]">
-              The LightningRevenue Standard
+              {t.highlightEyebrow}
             </div>
             <h3 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight mb-6 leading-[1.1]">
-              How much revenue is hidden <br className="hidden sm:block" /> in
-              bad design?
+              {t.highlightTitle}
             </h3>
             <p className="text-white/70 font-light leading-relaxed max-w-xl text-lg">
-              When users are confused, they leave. When an interface feels
-              premium and intuitive, trust skyrockets. A properly architected UX
-              redesign typically yields a{' '}
-              <strong className="text-white font-medium">
-                35% higher checkout conversion rate
-              </strong>{' '}
-              within the first 60 days, while completely unifying your visual
-              identity across all platforms.
+              {t.highlightDescription}
             </p>
           </div>
 
           <div className="relative z-10 shrink-0 w-full lg:w-auto flex flex-col sm:flex-row items-center gap-6">
-            <div className="flex flex-col items-center justify-center w-full sm:w-48 h-48 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm">
-              <span className="text-5xl font-medium text-white mb-1">
-                35<span className="text-[#2f5b7c]">%</span>
-              </span>
-              <span className="text-xs tracking-widest text-white/50 uppercase font-medium">
-                Higher CVR
-              </span>
-            </div>
-            <div className="flex flex-col items-center justify-center w-full sm:w-48 h-48 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm">
-              <span className="text-5xl font-medium text-white mb-1">
-                100<span className="text-[#2f5b7c]">%</span>
-              </span>
-              <span className="text-xs tracking-widest text-white/50 uppercase font-medium">
-                Consistency
-              </span>
-            </div>
+            {t.stats.map((stat) => (
+              <div
+                key={stat.label}
+                className="flex flex-col items-center justify-center w-full sm:w-48 h-48 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm"
+              >
+                <span className="text-5xl font-medium text-white mb-1">
+                  {stat.value.replace('%', '')}
+                  {stat.value.includes('%') && (
+                    <span className="text-[#2f5b7c]">%</span>
+                  )}
+                </span>
+                <span className="text-xs tracking-widest text-white/50 uppercase font-medium">
+                  {stat.label}
+                </span>
+              </div>
+            ))}
           </div>
         </div>
       </div>

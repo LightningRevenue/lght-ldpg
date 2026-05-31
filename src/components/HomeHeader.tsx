@@ -1,60 +1,13 @@
 "use client";
 
 import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-
-const helpData = [
-  {
-    serviceId: 'ppc',
-    serviceName: 'PPC Management',
-    serviceDesc: 'Data-driven pay-per-click scaling.',
-    outcome: 'Scale ROAS and decrease Cost Per Acquisition.',
-  },
-  {
-    serviceId: 'seo',
-    serviceName: 'SEO Optimization',
-    serviceDesc: 'Technical & content-driven optimization.',
-    outcome: 'Dominate niche search terms with high-intent traffic.',
-  },
-  {
-    serviceId: 'web',
-    serviceName: 'Web Development',
-    serviceDesc: 'High-performance marketing platforms.',
-    outcome: 'A blazing-fast, premium marketing site.',
-  },
-  {
-    serviceId: 'software',
-    serviceName: 'Software Development',
-    serviceDesc: 'Custom apps and internal tools.',
-    outcome: 'Custom software that automates 90% of manual work.',
-  },
-  {
-    serviceId: 'smm',
-    serviceName: 'Social Media Management',
-    serviceDesc: 'Organic community building & growth.',
-    outcome: 'A highly engaged social media following.',
-  },
-  {
-    serviceId: 'uiux',
-    serviceName: 'UI/UX Design',
-    serviceDesc: 'Premium interface and experience design.',
-    outcome: 'A world-class user interface that drives conversions.',
-  },
-  {
-    serviceId: 'lead',
-    serviceName: 'Lead Generation',
-    serviceDesc: 'Automated B2B outreach systems.',
-    outcome: 'Automated meeting booking with qualified prospects.',
-  },
-  {
-    serviceId: 'sales',
-    serviceName: 'Sales Tools Set-Up',
-    serviceDesc: 'CRM and pipeline architecture.',
-    outcome: 'A crystal-clear CRM architecture and short sales cycles.',
-  }
-];
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/lib/i18n';
+import { getHomeDictionary } from '@/i18n/get-home-dictionary';
 
 export default function HomeHeader() {
+  const t = getHomeDictionary(getLanguageFromPathname(usePathname())).homeHeader;
+  const helpData = t.helpItems;
   const [scrollY, setScrollY] = useState(0);
   
   // Modal State
@@ -124,24 +77,24 @@ export default function HomeHeader() {
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </div>
-            <span className="text-[13px] font-medium text-black/50 tracking-wide uppercase">Accepting new projects</span>
+            <span className="text-[13px] font-medium text-black/50 tracking-wide uppercase">{t.availability}</span>
           </div>
 
           {/* Massive Typography Hero */}
           <h1 className="text-[4.5rem] sm:text-[7rem] md:text-[9rem] lg:text-[11.5rem] font-medium tracking-[-0.04em] text-[#2f5b7c] leading-[0.85] -ml-1 sm:-ml-2">
-            <span className="block opacity-0 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>Digital</span>
-            <span className="block text-[#2f5b7c]/20 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>Excellence.</span>
+            <span className="block opacity-0 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>{t.titleLine1}</span>
+            <span className="block text-[#2f5b7c]/20 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.3s' }}>{t.titleLine2}</span>
           </h1>
 
           {/* Subtext and CTA - Asymmetric placement */}
           <div className="w-full flex flex-col sm:flex-row items-start sm:items-end justify-between mt-16 sm:mt-24 md:mt-32 gap-12">
             <p className="max-w-sm text-base sm:text-lg text-black/60 font-light leading-relaxed opacity-0 animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
-              We are the agency merging minimalist design with cutting-edge engineering to build elite digital experiences.
+              {t.description}
             </p>
 
             <div className="opacity-0 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
               <button onClick={() => setIsOpen(true)} className="group relative flex flex-col items-center justify-center w-32 h-32 sm:w-40 sm:h-40 rounded-full bg-black text-white hover:scale-[0.97] hover:bg-black/90 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] overflow-hidden pointer-events-auto cursor-pointer focus:outline-none">
-                <span className="text-[13px] font-medium tracking-wide z-10 group-hover:-translate-y-2 transition-transform duration-500">Let's talk</span>
+                <span className="text-[13px] font-medium tracking-wide z-10 group-hover:-translate-y-2 transition-transform duration-500">{t.cta}</span>
                 <div className="absolute bottom-8 left-1/2 -translate-x-1/2 translate-y-8 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
                   <svg className="w-4 h-4 text-white rotate-45" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 10l7-7m0 0l7 7m-7-7v18" />
@@ -162,8 +115,8 @@ export default function HomeHeader() {
             {/* Modal Header */}
             <div className="flex justify-between items-center px-8 py-6 border-b border-black/5 bg-white z-10 shrink-0">
               <div className="flex items-center gap-4">
-                <span className="font-bold tracking-tight text-sm uppercase text-black">Discovery Session</span>
-                <span className="text-xs font-mono bg-black/5 text-black/50 px-2 py-1 rounded">Phase {phase} of 4</span>
+                <span className="font-bold tracking-tight text-sm uppercase text-black">{t.modalTitle}</span>
+                <span className="text-xs font-mono bg-black/5 text-black/50 px-2 py-1 rounded">{t.modalPhase(phase)}</span>
               </div>
               <button onClick={resetAndClose} className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-black/5 transition-colors text-black/50 hover:text-black">
                 <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -179,26 +132,26 @@ export default function HomeHeader() {
                 {/* PHASE 1: Open Questions */}
                 {phase === 1 && (
                   <div className="animate-fade-in-up flex-1 flex flex-col">
-                    <h3 className="text-3xl font-medium mb-2 text-black">Tell us about your context.</h3>
-                    <p className="text-black/50 font-light mb-8">Before we talk services, we want to understand your business reality.</p>
+                    <h3 className="text-3xl font-medium mb-2 text-black">{t.contextTitle}</h3>
+                    <p className="text-black/50 font-light mb-8">{t.contextDescription}</p>
                     
                     <div className="flex flex-col gap-6 flex-1">
                       <div className="flex flex-col gap-3">
-                        <label className="text-sm font-medium text-black">1. What is the biggest bottleneck in your business right now?</label>
+                        <label className="text-sm font-medium text-black">{t.q1}</label>
                         <textarea 
                           value={q1}
                           onChange={(e) => setQ1(e.target.value)}
-                          placeholder="e.g. We get traffic, but no one converts. Or our sales cycle takes 6 months..."
+                          placeholder={t.q1Placeholder}
                           className="w-full h-28 p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-black/30 resize-none text-black placeholder:text-black/30 text-sm"
                         ></textarea>
                       </div>
 
                       <div className="flex flex-col gap-3">
-                        <label className="text-sm font-medium text-black">2. Where do you want the company to be in 12 months?</label>
+                        <label className="text-sm font-medium text-black">{t.q2}</label>
                         <textarea 
                           value={q2}
                           onChange={(e) => setQ2(e.target.value)}
-                          placeholder="e.g. Hit $1M ARR, completely automate lead gen, redesign the core product..."
+                          placeholder={t.q2Placeholder}
                           className="w-full h-28 p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-black/30 resize-none text-black placeholder:text-black/30 text-sm"
                         ></textarea>
                       </div>
@@ -209,8 +162,8 @@ export default function HomeHeader() {
                 {/* PHASE 2: Outcomes */}
                 {phase === 2 && (
                   <div className="animate-fade-in-up">
-                    <h3 className="text-3xl font-medium mb-2 text-black">Select desired outcomes</h3>
-                    <p className="text-black/50 font-light mb-8">Which of these concrete results would help you achieve those goals?</p>
+                    <h3 className="text-3xl font-medium mb-2 text-black">{t.outcomesTitle}</h3>
+                    <p className="text-black/50 font-light mb-8">{t.outcomesDescription}</p>
                     
                     <div className="grid grid-cols-1 gap-3">
                       {helpData.map(item => {
@@ -239,8 +192,8 @@ export default function HomeHeader() {
                 {/* PHASE 3: Services (Action Plan) */}
                 {phase === 3 && (
                   <div className="animate-fade-in-up">
-                    <h3 className="text-3xl font-medium mb-2 text-black">Your Action Plan</h3>
-                    <p className="text-black/50 font-light mb-8">Based on your goals and desired outcomes, here are the exact services that map to your needs.</p>
+                    <h3 className="text-3xl font-medium mb-2 text-black">{t.planTitle}</h3>
+                    <p className="text-black/50 font-light mb-8">{t.planDescription}</p>
                     
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       {helpData.map(item => {
@@ -254,7 +207,7 @@ export default function HomeHeader() {
                           >
                             {isRecommended && (
                               <div className="absolute -top-2.5 -right-2.5 bg-emerald-500 text-white text-[9px] font-bold uppercase tracking-wider px-2 py-1 rounded-full shadow-md z-10">
-                                Match
+                                {t.match}
                               </div>
                             )}
                             <div className="font-medium mb-1 flex items-center justify-between">
@@ -280,27 +233,27 @@ export default function HomeHeader() {
                 {/* PHASE 4: Contact Info */}
                 {phase === 4 && (
                   <div className="animate-fade-in-up flex-1 flex flex-col justify-center">
-                    <h3 className="text-3xl font-medium mb-2 text-black text-center">Let's build this.</h3>
-                    <p className="text-black/50 font-light mb-10 text-center">Enter your details and our senior strategist will review your situation before we talk.</p>
+                    <h3 className="text-3xl font-medium mb-2 text-black text-center">{t.contactTitle}</h3>
+                    <p className="text-black/50 font-light mb-10 text-center">{t.contactDescription}</p>
                     
                     <div className="flex flex-col gap-5 max-w-md mx-auto w-full">
                       <input 
                         type="text" 
-                        placeholder="Full Name" 
+                        placeholder={t.namePlaceholder}
                         value={contactInfo.name}
                         onChange={(e) => setContactInfo({...contactInfo, name: e.target.value})}
                         className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
                       />
                       <input 
                         type="email" 
-                        placeholder="Work Email" 
+                        placeholder={t.emailPlaceholder}
                         value={contactInfo.email}
                         onChange={(e) => setContactInfo({...contactInfo, email: e.target.value})}
                         className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
                       />
                       <input 
                         type="text" 
-                        placeholder="Company URL" 
+                        placeholder={t.companyPlaceholder}
                         value={contactInfo.company}
                         onChange={(e) => setContactInfo({...contactInfo, company: e.target.value})}
                         className="w-full p-4 rounded-xl border border-black/10 bg-white text-black focus:outline-none focus:border-black/30 transition-colors placeholder:text-black/30"
@@ -321,7 +274,7 @@ export default function HomeHeader() {
                   onClick={() => setPhase(phase - 1)} 
                   className="px-6 py-3 text-sm font-medium text-black/50 hover:text-black transition-colors"
                 >
-                  Back
+                  {t.back}
                 </button>
               )}
 
@@ -330,31 +283,31 @@ export default function HomeHeader() {
                   onClick={() => setPhase(2)} 
                   className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-black/90 transition-colors shadow-lg"
                 >
-                  Next: Outcomes
+                  {t.nextOutcomes}
                 </button>
               ) : phase === 2 ? (
                 <button 
                   onClick={calculateRecommendations}
                   className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-black/90 transition-colors shadow-lg"
                 >
-                  Analyze Matches
+                  {t.analyzeMatches}
                 </button>
               ) : phase === 3 ? (
                 <button 
                   onClick={() => setPhase(4)} 
                   className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-black/90 transition-colors shadow-lg"
                 >
-                  Continue to Contact
+                  {t.continueContact}
                 </button>
               ) : (
                 <button 
                   onClick={() => {
-                    alert('Submission received! (Demo)');
+                    alert(t.demoSubmitted);
                     resetAndClose();
                   }}
                   className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-emerald-600 transition-colors shadow-lg"
                 >
-                  Submit Request
+                  {t.submitRequest}
                 </button>
               )}
             </div>

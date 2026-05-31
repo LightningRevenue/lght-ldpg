@@ -1,8 +1,10 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import SiteChrome from '@/components/SiteChrome';
+import { siteOrigin } from '@/lib/seo-metadata';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(siteOrigin),
   title: 'LightningRevenue - Premium Digital Agency',
   description: 'Minimalist, high-end digital marketing agency.',
   verification: {

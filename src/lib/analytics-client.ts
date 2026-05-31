@@ -26,6 +26,17 @@ type AnalyticsState = {
 const CONSENT_KEY = 'LightningRevenue_consent';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 365;
 const SESSION_MAX_AGE = 60 * 60 * 2;
+const ANALYTICS_COOKIE_NAMES = [
+  'LightningRevenue_visitor_id',
+  'LightningRevenue_session_id',
+  'LightningRevenue_landing_page',
+  'LightningRevenue_referrer',
+  'LightningRevenue_utm_source',
+  'LightningRevenue_utm_medium',
+  'LightningRevenue_utm_campaign',
+  'LightningRevenue_utm_content',
+  'LightningRevenue_utm_term',
+];
 
 function randomId() {
   if (window.crypto?.randomUUID) {
@@ -47,6 +58,14 @@ function writeCookie(key: string, value: string, maxAge = COOKIE_MAX_AGE) {
   document.cookie = `${key}=${encodeURIComponent(value)}; Max-Age=${maxAge}; Path=/; SameSite=Lax`;
 }
 
+function expireCookie(key: string) {
+  document.cookie = `${key}=; Max-Age=0; Path=/; SameSite=Lax`;
+
+  if (window.location.hostname) {
+    document.cookie = `${key}=; Max-Age=0; Path=/; Domain=${window.location.hostname}; SameSite=Lax`;
+  }
+}
+
 function readConsent() {
   const rawConsent = window.localStorage.getItem(CONSENT_KEY);
 
@@ -63,6 +82,10 @@ function readConsent() {
 
 export function hasAnalyticsConsent() {
   return readConsent()?.analytics === true;
+}
+
+export function clearAnalyticsState() {
+  ANALYTICS_COOKIE_NAMES.forEach(expireCookie);
 }
 
 function readOrCreateCookie(

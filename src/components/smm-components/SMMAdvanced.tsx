@@ -1,25 +1,15 @@
-import React from 'react';
+"use client";
 
-const advancedFeatures = [
-  {
-    title: 'Social Listening APIs',
-    description: 'Monitoring global brand sentiment and intercepting competitor complaints in real-time. We use tools like Brandwatch to find users actively looking for your solution.'
-  },
-  {
-    title: 'Employee Advocacy Programs',
-    description: 'Turning your entire C-suite and workforce into a synchronized LinkedIn distribution network, exponentially increasing B2B reach without ad spend.'
-  },
-  {
-    title: 'Micro-Targeted Whitelisting',
-    description: 'Running dark posts and paid social campaigns directly through creator and influencer handles to drastically reduce CPA and instantly boost trust.'
-  },
-  {
-    title: 'Cross-Platform Pixel Tracking',
-    description: 'Mapping the complex user journey from an initial organic TikTok view to a closed B2B deal 60 days later, proving the exact ROI of your organic social.'
-  }
-];
+import React from 'react';
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/i18n/config';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 
 export default function SMMAdvanced() {
+  const t = getServicesDictionary(
+    getLanguageFromPathname(usePathname())
+  ).smm.advanced;
+
   return (
     <section className="relative w-full bg-[#fafafa] z-10 py-32 px-6 border-t border-black/5">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 md:gap-24">
@@ -27,12 +17,12 @@ export default function SMMAdvanced() {
         {/* Left Side: Title */}
         <div className="w-full md:w-1/3">
           <div className="sticky top-32">
-            <div className="text-xs font-bold text-black/40 mb-6 uppercase tracking-widest">Advanced Distribution</div>
+            <div className="text-xs font-bold text-black/40 mb-6 uppercase tracking-widest">{t.eyebrow}</div>
             <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-black leading-tight mb-6">
-              Beyond basic <br />posting.
+              {t.title}
             </h2>
             <p className="text-black/50 font-light text-base sm:text-lg max-w-sm">
-              We move past standard content calendars by integrating employee advocacy, creator whitelisting, and advanced social listening APIs.
+              {t.description}
             </p>
           </div>
         </div>
@@ -40,7 +30,7 @@ export default function SMMAdvanced() {
         {/* Right Side: Table-like List */}
         <div className="w-full md:w-2/3 flex flex-col">
           <div className="border-t border-black/10 w-full"></div>
-          {advancedFeatures.map((feature, index) => (
+          {t.features.map((feature, index) => (
             <div 
               key={index} 
               className="group py-8 sm:py-12 flex flex-col sm:flex-row gap-4 sm:gap-12 border-b border-black/10 hover:bg-black/[0.02] transition-colors duration-500 -mx-6 px-6 sm:mx-0 sm:px-0 justify-between items-start"

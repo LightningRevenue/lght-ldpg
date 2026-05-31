@@ -2,6 +2,9 @@
 
 import React, { useState } from 'react';
 import { helpData } from '@/lib/help-data';
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/lib/i18n';
+import { getHomeDictionary } from '@/i18n/get-home-dictionary';
 
 const expertiseOptions = [
   { id: 'sla', name: 'SLA', desc: 'Strict guaranteed performance metrics.', details: 'Financially-backed guarantees ensuring target KPIs, uptime, and minimum delivery thresholds are rigorously met.' },
@@ -22,6 +25,7 @@ const foundationServices = [
 type ActiveModal = 'none' | 'custom' | 'foundation' | 'momentum' | 'apex';
 
 export default function Packages() {
+  const t = getHomeDictionary(getLanguageFromPathname(usePathname())).packages;
   const [activeModal, setActiveModal] = useState<ActiveModal>('none');
   const [phase, setPhase] = useState(1);
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -131,10 +135,10 @@ export default function Packages() {
           {/* Header */}
           <div className="text-center mb-20">
             <h2 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-black mb-6">
-              Engagement Models.
+              {t.title}
             </h2>
             <p className="text-black/50 font-light max-w-xl mx-auto text-base sm:text-lg">
-              Choose a standardized framework or build a bespoke engagement tailored precisely to your current scale and velocity.
+              {t.description}
             </p>
           </div>
 
@@ -142,38 +146,38 @@ export default function Packages() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8 mb-6 sm:mb-8">
             {/* Foundation */}
             <div className="flex flex-col p-8 sm:p-10 border border-black/10 hover:border-black/20 transition-all duration-500 rounded-3xl bg-white shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
-              <div className="text-xs font-bold text-black/40 mb-8 uppercase tracking-widest">Start</div>
-              <h3 className="text-3xl font-medium text-black mb-4">Foundation</h3>
+              <div className="text-xs font-bold text-black/40 mb-8 uppercase tracking-widest">{t.levels.start}</div>
+              <h3 className="text-3xl font-medium text-black mb-4">{t.levels.foundation}</h3>
               <p className="text-black/60 font-light mb-12 flex-1 leading-relaxed">
-                Essential digital infrastructure and core marketing initiatives designed for emerging brands ready to enter the market.
+                {t.levels.foundationDesc}
               </p>
               <button onClick={() => openModal('foundation')} className="w-full py-3.5 px-6 rounded-full border border-black/20 text-black text-center text-[14px] font-medium hover:bg-black hover:text-white hover:border-black transition-all duration-300">
-                Select Foundation
+                {t.levels.selectFoundation}
               </button>
             </div>
 
             {/* Momentum */}
             <div className="flex flex-col p-8 sm:p-10 border border-black bg-black text-white rounded-3xl shadow-2xl relative overflow-hidden transform hover:-translate-y-1 transition-transform duration-500">
               <div className="absolute top-0 right-10 w-48 h-48 bg-white opacity-[0.03] rounded-full blur-3xl pointer-events-none"></div>
-              <div className="text-xs font-bold text-white/50 mb-8 uppercase tracking-widest relative z-10">Medium</div>
-              <h3 className="text-3xl font-medium text-white mb-4 relative z-10">Momentum</h3>
+              <div className="text-xs font-bold text-white/50 mb-8 uppercase tracking-widest relative z-10">{t.levels.medium}</div>
+              <h3 className="text-3xl font-medium text-white mb-4 relative z-10">{t.levels.momentum}</h3>
               <p className="text-white/70 font-light mb-12 flex-1 leading-relaxed relative z-10">
-                Aggressive growth strategies, advanced web development, and data-driven PPC scaling for operations gaining traction.
+                {t.levels.momentumDesc}
               </p>
               <button onClick={() => openModal('momentum')} className="w-full py-3.5 px-6 rounded-full bg-white text-black text-center text-[14px] font-semibold hover:bg-white/90 hover:shadow-lg transition-all duration-300 relative z-10">
-                Select Momentum
+                {t.levels.selectMomentum}
               </button>
             </div>
 
             {/* Apex */}
             <div className="flex flex-col p-8 sm:p-10 border border-black/10 hover:border-black/20 transition-all duration-500 rounded-3xl bg-white shadow-[0_8px_30px_rgba(0,0,0,0.02)]">
-              <div className="text-xs font-bold text-black/40 mb-8 uppercase tracking-widest">High</div>
-              <h3 className="text-3xl font-medium text-black mb-4">Apex</h3>
+              <div className="text-xs font-bold text-black/40 mb-8 uppercase tracking-widest">{t.levels.high}</div>
+              <h3 className="text-3xl font-medium text-black mb-4">{t.levels.apex}</h3>
               <p className="text-black/60 font-light mb-12 flex-1 leading-relaxed">
-                Enterprise-grade solutions, omni-channel dominance, and dedicated elite teams for market leaders.
+                {t.levels.apexDesc}
               </p>
               <button onClick={() => openModal('apex')} className="w-full py-3.5 px-6 rounded-full border border-black/20 text-black text-center text-[14px] font-medium hover:bg-black hover:text-white hover:border-black transition-all duration-300">
-                Select Apex
+                {t.levels.selectApex}
               </button>
             </div>
           </div>
@@ -181,10 +185,10 @@ export default function Packages() {
           {/* Custom Package Banner */}
           <div className="w-full p-8 sm:p-12 border border-black/10 rounded-3xl bg-white shadow-[0_8px_30px_rgba(0,0,0,0.02)] flex flex-col md:flex-row items-start md:items-center justify-between gap-8 group hover:border-black/20 transition-colors duration-500">
             <div>
-              <div className="text-xs font-bold text-black/40 mb-4 uppercase tracking-widest">Custom</div>
-              <h3 className="text-2xl sm:text-3xl font-medium text-black mb-3">Make your own package</h3>
+              <div className="text-xs font-bold text-black/40 mb-4 uppercase tracking-widest">{t.customLabel}</div>
+              <h3 className="text-2xl sm:text-3xl font-medium text-black mb-3">{t.customTitle}</h3>
               <p className="text-black/60 font-light max-w-2xl leading-relaxed">
-                Don't fit into a box? Let's sit down and craft a completely bespoke retainer or project scope that aligns perfectly with your unique business logic, timeline, and internal resources.
+                {t.customDescription}
               </p>
             </div>
             

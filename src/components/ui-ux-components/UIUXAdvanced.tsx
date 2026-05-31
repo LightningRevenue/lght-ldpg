@@ -1,25 +1,15 @@
-import React from 'react';
+"use client";
 
-const advancedFeatures = [
-  {
-    title: 'Biometric User Testing',
-    description: 'Using eye-tracking and facial coding software to see exactly where users look and how they emotionally react to your interface in real-time.'
-  },
-  {
-    title: '3D & WebGL Integration',
-    description: 'Implementing Spline or Three.js models to create immersive, interactive product showcases that completely destroy traditional flat imagery.'
-  },
-  {
-    title: 'Predictive UX Automation',
-    description: 'Using machine learning logic to dynamically alter the interface and content based on a specific user\'s past behavior and inferred intent.'
-  },
-  {
-    title: 'Heuristic Evaluations',
-    description: 'Rigorous audits conducted by senior UX researchers against Jakob Nielsen\'s 10 general principles to identify and eliminate severe cognitive friction points.'
-  }
-];
+import React from 'react';
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/i18n/config';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 
 export default function UIUXAdvanced() {
+  const t = getServicesDictionary(
+    getLanguageFromPathname(usePathname())
+  ).uiUx.advanced;
+
   return (
     <section className="relative w-full bg-[#fafafa] z-10 py-32 px-6 border-t border-black/5">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-16 md:gap-24">
@@ -27,12 +17,12 @@ export default function UIUXAdvanced() {
         {/* Left Side: Title */}
         <div className="w-full md:w-1/3">
           <div className="sticky top-32">
-            <div className="text-xs font-bold text-black/40 mb-6 uppercase tracking-widest">Advanced Methodologies</div>
+            <div className="text-xs font-bold text-black/40 mb-6 uppercase tracking-widest">{t.eyebrow}</div>
             <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-black leading-tight mb-6">
-              Beyond basic <br />mockups.
+              {t.title}
             </h2>
             <p className="text-black/50 font-light text-base sm:text-lg max-w-sm">
-              We move past standard wireframes by integrating biometric testing, immersive 3D web technologies, and predictive user experiences.
+              {t.description}
             </p>
           </div>
         </div>
@@ -40,7 +30,7 @@ export default function UIUXAdvanced() {
         {/* Right Side: Table-like List */}
         <div className="w-full md:w-2/3 flex flex-col">
           <div className="border-t border-black/10 w-full"></div>
-          {advancedFeatures.map((feature, index) => (
+          {t.features.map((feature, index) => (
             <div 
               key={index} 
               className="group py-8 sm:py-12 flex flex-col sm:flex-row gap-4 sm:gap-12 border-b border-black/10 hover:bg-black/[0.02] transition-colors duration-500 -mx-6 px-6 sm:mx-0 sm:px-0 justify-between items-start"

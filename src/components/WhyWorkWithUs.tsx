@@ -1,21 +1,13 @@
-import React from 'react';
+'use client';
 
-const reasons = [
-  {
-    title: "Data-Backed Strategies.",
-    description: "We don't do guesswork. Every campaign, design choice, and line of code is driven by hard data and user behavior analysis to ensure predictable and scalable growth."
-  },
-  {
-    title: "Uncompromising Quality.",
-    description: "We believe in digital craftsmanship. No templates, no shortcuts. We build bespoke solutions that perform flawlessly and position your brand at the premium level."
-  },
-  {
-    title: "True Partnership.",
-    description: "We aren't just an agency; we act as an extension of your internal team. We offer transparent communication, aligned goals, and a shared commitment to dominating your market."
-  }
-];
+import React from 'react';
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/lib/i18n';
+import { getHomeDictionary } from '@/i18n/get-home-dictionary';
 
 export default function WhyWorkWithUs() {
+  const t = getHomeDictionary(getLanguageFromPathname(usePathname())).why;
+
   return (
     <section className="relative w-full bg-[#fafafa] z-10 py-32 px-6">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-16 lg:gap-24">
@@ -24,10 +16,15 @@ export default function WhyWorkWithUs() {
         <div className="w-full lg:w-1/3">
           <div className="sticky top-32">
             <h2 className="text-4xl sm:text-6xl md:text-7xl font-medium tracking-tight text-black leading-[1.05] mb-6">
-              Why work<br />with us.
+              {t.title.split('\n').map((line, index) => (
+                <React.Fragment key={line}>
+                  {index > 0 && <br />}
+                  {line}
+                </React.Fragment>
+              ))}
             </h2>
             <p className="text-black/50 font-light text-base sm:text-lg max-w-sm">
-              We don't just deliver services; we build high-performance growth engines. Here is what sets our agency apart.
+              {t.description}
             </p>
             
             {/* Minimalist Decoration */}
@@ -38,7 +35,7 @@ export default function WhyWorkWithUs() {
         {/* Right Side: Features List */}
         <div className="w-full lg:w-2/3 flex flex-col">
           <div className="border-t border-black/10 w-full"></div>
-          {reasons.map((reason, index) => (
+          {t.reasons.map((reason, index) => (
             <div 
               key={index} 
               className="group py-12 sm:py-16 flex flex-col sm:flex-row gap-4 sm:gap-12 border-b border-black/10 hover:bg-black/[0.02] transition-colors duration-500 -mx-6 px-6 sm:mx-0 sm:px-0"

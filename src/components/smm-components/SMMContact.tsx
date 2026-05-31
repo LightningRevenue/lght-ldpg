@@ -1,9 +1,13 @@
 "use client";
 
 import React, { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/i18n/config';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 import { submitServiceRequest } from '@/lib/service-request-client';
 
 export default function SMMContact() {
+  const t = getServicesDictionary(getLanguageFromPathname(usePathname())).smm.contact;
   const [phase, setPhase] = useState(1);
   const [formData, setFormData] = useState({
     challenge: '',
@@ -27,7 +31,7 @@ export default function SMMContact() {
       setPhase(1);
       setFormData({ challenge: '', budget: '', socialUrl: '', name: '', email: '' });
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "The request could not be submitted.");
+      setSubmitError(error instanceof Error ? error.message : t.error);
     } finally {
       setIsSubmitting(false);
     }
@@ -39,10 +43,10 @@ export default function SMMContact() {
         
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-medium tracking-tight text-black mb-4">
-            Request a Content Audit.
+            {t.title}
           </h2>
           <p className="text-black/50 font-light text-lg">
-            Our creative directors will review your current social presence and map out a viral growth framework.
+            {t.description}
           </p>
         </div>
 
@@ -52,8 +56,8 @@ export default function SMMContact() {
           {/* Header */}
           <div className="flex justify-between items-center px-8 py-6 border-b border-black/5 bg-white z-10 shrink-0">
             <div className="flex items-center gap-4">
-              <span className="font-bold tracking-tight text-sm uppercase text-black">Audit Application</span>
-              <span className="text-xs font-mono bg-black/5 text-black/50 px-2 py-1 rounded">Phase {phase} of 4</span>
+              <span className="font-bold tracking-tight text-sm uppercase text-black">{t.formTitle}</span>
+              <span className="text-xs font-mono bg-black/5 text-black/50 px-2 py-1 rounded">{t.phaseLabel(phase)}</span>
             </div>
             
             <div className="flex -space-x-2">
@@ -69,13 +73,13 @@ export default function SMMContact() {
               {/* Phase 1: Challenge */}
               {phase === 1 && (
                 <div className="animate-fade-in-up w-full">
-                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">What's the main social struggle?</h3>
-                  <p className="text-black/50 font-light mb-8">Before we look at the feeds, tell us what's hurting your organic growth.</p>
+                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">{t.challengeTitle}</h3>
+                  <p className="text-black/50 font-light mb-8">{t.challengeDescription}</p>
                   
                   <textarea 
                     value={formData.challenge}
                     onChange={(e) => setFormData({...formData, challenge: e.target.value})}
-                    placeholder="e.g. We post constantly on LinkedIn but get zero engagement, or we want to launch TikTok but don't know how..."
+                    placeholder={t.challengePlaceholder}
                     className="w-full h-32 p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-[#2f5b7c] resize-none text-black placeholder:text-black/30 text-sm"
                   ></textarea>
                 </div>
@@ -84,11 +88,11 @@ export default function SMMContact() {
               {/* Phase 2: Budget */}
               {phase === 2 && (
                 <div className="animate-fade-in-up w-full">
-                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">Monthly SMM Budget</h3>
-                  <p className="text-black/50 font-light mb-8">This determines the volume of content production we can deploy.</p>
+                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">{t.spendTitle}</h3>
+                  <p className="text-black/50 font-light mb-8">{t.spendDescription}</p>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {['Under $2,500', '$2,500 - $5,000', '$5,000 - $10,000', '$10,000+'].map(budgetTier => (
+                    {t.spendOptions.map(budgetTier => (
                       <button 
                         key={budgetTier}
                         onClick={() => setFormData({...formData, budget: budgetTier})}
@@ -109,14 +113,14 @@ export default function SMMContact() {
               {/* Phase 3: URL */}
               {phase === 3 && (
                 <div className="animate-fade-in-up w-full">
-                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">Where is your main audience?</h3>
-                  <p className="text-black/50 font-light mb-8">Drop a link to your primary social profile (LinkedIn, TikTok, IG).</p>
+                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">{t.websiteTitle}</h3>
+                  <p className="text-black/50 font-light mb-8">{t.websiteDescription}</p>
                   
                   <input 
                     type="url" 
                     value={formData.socialUrl}
                     onChange={(e) => setFormData({...formData, socialUrl: e.target.value})}
-                    placeholder="https://linkedin.com/company/yourbrand"
+                    placeholder={t.websitePlaceholder}
                     className="w-full p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-[#2f5b7c] text-black placeholder:text-black/30 text-sm"
                   />
                 </div>
@@ -125,20 +129,20 @@ export default function SMMContact() {
               {/* Phase 4: Contact */}
               {phase === 4 && (
                 <div className="animate-fade-in-up w-full text-center">
-                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">Where should we send the audit?</h3>
-                  <p className="text-black/50 font-light mb-10">We'll review your content and email you a direct video breakdown.</p>
+                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">{t.contactTitle}</h3>
+                  <p className="text-black/50 font-light mb-10">{t.contactDescription}</p>
                   
                   <div className="flex flex-col gap-4 max-w-sm mx-auto">
                     <input 
                       type="text" 
-                      placeholder="Full Name" 
+                      placeholder={t.namePlaceholder} 
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                       className="w-full p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-[#2f5b7c] text-black placeholder:text-black/30 text-sm"
                     />
                     <input 
                       type="email" 
-                      placeholder="Work Email" 
+                      placeholder={t.emailPlaceholder} 
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
                       className="w-full p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-[#2f5b7c] text-black placeholder:text-black/30 text-sm"
@@ -147,7 +151,7 @@ export default function SMMContact() {
                       <p className="text-sm text-red-600">{submitError}</p>
                     )}
                     {isSubmitted && (
-                      <p className="text-sm text-emerald-600">Request submitted.</p>
+                      <p className="text-sm text-emerald-600">{t.success}</p>
                     )}
                   </div>
                 </div>
@@ -165,7 +169,7 @@ export default function SMMContact() {
                 onClick={() => setPhase(phase - 1)} 
                 className="px-6 py-3 text-sm font-medium text-black/50 hover:text-black transition-colors"
               >
-                Back
+                {t.back}
               </button>
             )}
 
@@ -175,7 +179,7 @@ export default function SMMContact() {
                 disabled={(phase === 1 && !formData.challenge) || (phase === 2 && !formData.budget) || (phase === 3 && !formData.socialUrl)}
                 className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-[#2f5b7c] transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Next Step
+                {t.nextStep}
               </button>
             ) : (
               <button 
@@ -183,7 +187,7 @@ export default function SMMContact() {
                 disabled={!formData.name || !formData.email || isSubmitting}
                 className="px-8 py-3 bg-[#2f5b7c] text-white rounded-full text-sm font-medium hover:bg-black transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Submitting..." : "Request Audit"}
+                {isSubmitting ? t.submitting : t.submit}
               </button>
             )}
           </div>

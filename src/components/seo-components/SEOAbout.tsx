@@ -1,4 +1,9 @@
+'use client';
+
 import React from 'react';
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/lib/i18n';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 
 const seoInfo = [
   {
@@ -118,24 +123,27 @@ const seoInfo = [
 ];
 
 export default function SEOAbout() {
+  const t = getServicesDictionary(getLanguageFromPathname(usePathname())).seo.about;
+
   return (
     <section className="relative z-10 py-32 px-6 bg-white w-full">
       <div className="max-w-7xl mx-auto flex flex-col items-center">
         {/* Section Header */}
         <div className="text-center mb-20 max-w-3xl">
           <h2 className="text-4xl sm:text-5xl font-medium tracking-tight text-black mb-6">
-            The Anatomy of Correct SEO.
+            {t.title}
           </h2>
           <p className="text-black/50 font-light text-lg">
-            We don't just "build links" or write generic blogs. We engineer
-            organic authority. Every piece of content and line of code is
-            optimized to capture pure search intent.
+            {t.description}
           </p>
         </div>
 
         {/* 6 Grid Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full mb-32">
-          {seoInfo.map((item, idx) => (
+          {seoInfo.map((item, idx) => {
+            const copy = t.cards[idx] || item;
+
+            return (
             <div
               key={idx}
               className="p-8 sm:p-10 rounded-3xl border border-black/10 bg-[#fafafa] hover:bg-white hover:shadow-[0_8px_30px_rgba(0,0,0,0.04)] hover:border-black/20 transition-all duration-500 flex flex-col group"
@@ -144,13 +152,14 @@ export default function SEOAbout() {
                 {item.icon}
               </div>
               <h3 className="text-xl font-medium text-black mb-3">
-                {item.title}
+                {copy.title}
               </h3>
               <p className="text-black/60 font-light leading-relaxed text-sm">
-                {item.desc}
+                {copy.desc}
               </p>
             </div>
-          ))}
+            );
+          })}
         </div>
 
         {/* Highlight / Growth Stat */}
@@ -161,39 +170,27 @@ export default function SEOAbout() {
 
           <div className="relative z-10 flex-1">
             <div className="text-xs font-bold text-white/50 mb-6 uppercase tracking-[0.2em]">
-              The LightningRevenue Standard
+              {t.highlightEyebrow}
             </div>
             <h3 className="text-3xl sm:text-4xl lg:text-5xl font-medium tracking-tight mb-6 leading-[1.1]">
-              How much can you grow <br className="hidden sm:block" /> with
-              elite SEO?
+              {t.highlightTitle}
             </h3>
             <p className="text-white/70 font-light leading-relaxed max-w-xl text-lg">
-              When technical foundations are flawless and content perfectly
-              aligns with search intent, organic traffic becomes a compounding
-              asset. A properly architected SEO strategy typically yields a{' '}
-              <strong className="text-white font-medium">
-                400% increase in non-branded organic traffic
-              </strong>{' '}
-              within 6 months, while drastically reducing your long-term
-              dependence on paid acquisition.
+              {t.highlightDescription}
             </p>
           </div>
 
           <div className="relative z-10 shrink-0 w-full lg:w-auto flex flex-col sm:flex-row items-center gap-6">
-            <div className="flex flex-col items-center justify-center w-full sm:w-48 h-48 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm">
+            {t.stats.map(stat => (
+            <div key={stat.label} className="flex flex-col items-center justify-center w-full sm:w-48 h-48 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm">
               <span className="text-5xl font-medium text-white mb-1">
-                400<span className="text-[#2f5b7c]">%</span>
+                {stat.value.replace('%', '')}<span className="text-[#2f5b7c]">{stat.value.includes('%') ? '%' : ''}</span>
               </span>
               <span className="text-xs tracking-widest text-white/50 uppercase font-medium">
-                More Traffic
+                {stat.label}
               </span>
             </div>
-            <div className="flex flex-col items-center justify-center w-full sm:w-48 h-48 rounded-full border border-white/20 bg-white/5 backdrop-blur-sm">
-              <span className="text-5xl font-medium text-white mb-1">Zero</span>
-              <span className="text-xs tracking-widest text-white/50 uppercase font-medium">
-                Ad Spend
-              </span>
-            </div>
+            ))}
           </div>
         </div>
       </div>

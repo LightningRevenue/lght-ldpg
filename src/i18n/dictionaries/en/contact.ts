@@ -1,0 +1,57 @@
+import type { ContactDictionary } from '@/i18n/types';
+
+export const contact: ContactDictionary = {
+  availability: 'Accepting new projects',
+  title: 'Contact',
+  titleGhost: 'LightningRevenue.',
+  description:
+    'Tell us what you are building, where growth is blocked, and what timeline matters. We will route it to the right strategist before the first call.',
+  stats: [
+    { label: 'Response window', value: '24h' },
+    { label: 'Discovery format', value: 'Video' },
+    { label: 'Scope clarity', value: '100%' },
+  ],
+  direct: 'Direct',
+  email: 'Email',
+  timezone: 'Timezone',
+  timezoneValue: 'EU / US overlap',
+  bestFit: 'Best fit',
+  bestFitValue: 'Growth and build teams',
+  form: {
+    service: 'Service',
+    budget: 'Budget',
+    timeline: 'Timeline',
+    namePlaceholder: 'Full Name',
+    emailPlaceholder: 'Work Email',
+    companyPlaceholder: 'Company URL or Name',
+    messagePlaceholder: 'What should we know before we talk?',
+    serviceOptions: [
+      'PPC Management',
+      'SEO Optimization',
+      'Web Development',
+      'Software Development',
+      'Social Media Management',
+      'UI/UX Design',
+      'Lead Generation',
+      'Sales Tools Set-Up',
+      'Custom Scope',
+    ],
+    budgetOptions: [
+      'Under $5k',
+      '$5k - $15k',
+      '$15k - $50k',
+      '$50k - $150k',
+      '$150k+',
+    ],
+    timelineOptions: [
+      'Immediately',
+      'This month',
+      'This quarter',
+      'Planning ahead',
+    ],
+    error: 'The request could not be submitted.',
+    success: 'Request submitted. We will get back to you shortly.',
+    submitting: 'Submitting...',
+    submit: 'Submit Request',
+  },
+};

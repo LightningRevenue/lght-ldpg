@@ -1,38 +1,23 @@
 "use client";
 
 import React, { useState } from 'react';
-
-const faqs = [
-  {
-    question: "Do you offer white-label services?",
-    answer: "No. We believe in direct partnerships and total transparency. We work exclusively as an extension of your internal team, not as a hidden vendor behind another agency."
-  },
-  {
-    question: "How do you measure success?",
-    answer: "We define success through concrete revenue growth and pipeline velocity, not vanity metrics like impressions or clicks. Every digital initiative we deploy is tied directly to your bottom line."
-  },
-  {
-    question: "What is your typical onboarding timeline?",
-    answer: "Our standard onboarding takes precisely 14 days from contract execution to full operational integration. This covers in-depth technical audits, access provisioning, and strategic alignment."
-  },
-  {
-    question: "Do you work with early-stage startups?",
-    answer: "We partner strictly with companies that have achieved clear product-market fit and are ready to scale rapidly. If you are in the pre-seed validation phase, our infrastructure might be too heavy for your current needs."
-  }
-];
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/lib/i18n';
+import { getHomeDictionary } from '@/i18n/get-home-dictionary';
 
 export default function FAQ() {
+  const t = getHomeDictionary(getLanguageFromPathname(usePathname())).faq;
   const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
     <section className="relative w-full bg-[#fafafa] z-10 py-32 px-6">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-black mb-16 text-center">
-          Frequently Asked.
+          {t.title}
         </h2>
 
         <div className="flex flex-col border-t border-black/10">
-          {faqs.map((faq, index) => {
+          {t.items.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
               <div key={index} className="border-b border-black/10">

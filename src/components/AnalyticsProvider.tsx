@@ -3,6 +3,7 @@
 import { usePathname, useSearchParams } from 'next/navigation';
 import React, { Suspense, useEffect } from 'react';
 import {
+  clearAnalyticsState,
   ensureAnalyticsState,
   trackAnalyticsEvent,
 } from '@/lib/analytics-client';
@@ -22,6 +23,8 @@ function AnalyticsRuntime() {
       if (consent?.analytics) {
         ensureAnalyticsState();
         void trackAnalyticsEvent('page_view', { source: 'consent_update' });
+      } else {
+        clearAnalyticsState();
       }
     };
 

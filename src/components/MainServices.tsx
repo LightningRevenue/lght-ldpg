@@ -1,5 +1,10 @@
+'use client';
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname, localizePath } from '@/lib/i18n';
+import { getHomeDictionary } from '@/i18n/get-home-dictionary';
 
 const services = [
   {
@@ -29,6 +34,11 @@ const services = [
 ];
 
 export default function MainServices() {
+  const pathname = usePathname();
+  const language = getLanguageFromPathname(pathname);
+  const t = getHomeDictionary(language).mainServices;
+  const href = (path: string) => localizePath(path, language);
+
   return (
     <section className="relative w-full bg-white z-10 py-32 px-6 rounded-t-[3rem] sm:rounded-t-[4rem] shadow-[0_-20px_40px_rgba(0,0,0,0.03)] border-t border-black/[0.05]">
       <div className="max-w-7xl mx-auto">
@@ -36,29 +46,29 @@ export default function MainServices() {
         {/* Section Header */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-8">
           <div>
-            <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-black mb-4">Core Services.</h2>
-            <p className="text-slate-500 font-light max-w-md">Our focused expertise to accelerate your digital growth and operational efficiency.</p>
+            <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-black mb-4">{t.title}</h2>
+            <p className="text-slate-500 font-light max-w-md">{t.description}</p>
           </div>
-          <Link href="/contact" className="text-[13px] font-bold uppercase tracking-wider text-black border-b border-black pb-1 hover:text-black/60 transition-colors">
-            View All Capabilities
+          <Link href={href('/contact')} className="text-[13px] font-bold uppercase tracking-wider text-black border-b border-black pb-1 hover:text-black/60 transition-colors">
+            {t.cta}
           </Link>
         </div>
 
         {/* Services Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
           {services.map((service, index) => (
-            <Link key={service.href} href={service.href} className="group block cursor-pointer">
+            <Link key={service.href} href={href(service.href)} className="group block cursor-pointer">
               <div className="border-t border-black/10 pt-6 transition-colors duration-500 group-hover:border-black/40">
                 <div className="flex items-start justify-between mb-8">
                   <h3 className="text-2xl sm:text-3xl font-medium tracking-tight text-black">
-                    {service.title}
+                  {t.services[index]?.title || service.title}
                   </h3>
                   <span className="text-sm font-medium text-black/30 font-mono">
                     {service.number}
                   </span>
                 </div>
                 <p className="text-black/60 font-light leading-relaxed max-w-sm mb-8">
-                  {service.description}
+                  {t.services[index]?.description || service.description}
                 </p>
                 
                 {/* Minimalist Arrow */}

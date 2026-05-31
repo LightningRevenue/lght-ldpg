@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useMemo, useState } from 'react';
+import { clearAnalyticsState } from '@/lib/analytics-client';
 
 type ConsentState = {
   necessary: true;
@@ -73,6 +74,11 @@ function getStoredConsent(): ConsentState | null {
 function persistConsent(consent: ConsentState) {
   window.localStorage.setItem(CONSENT_KEY, JSON.stringify(consent));
   document.cookie = `${CONSENT_KEY}=${encodeURIComponent(JSON.stringify(consent))}; Max-Age=${ONE_YEAR_SECONDS}; Path=/; SameSite=Lax`;
+
+  if (!consent.analytics) {
+    clearAnalyticsState();
+  }
+
   window.dispatchEvent(
     new CustomEvent('LightningRevenue:consent-updated', { detail: consent })
   );
@@ -147,6 +153,14 @@ export default function CookieConsent() {
       analytics: true,
       marketing: true,
       preferences: true,
+    });
+  };
+
+  const rejectOptional = () => {
+    saveConsent({
+      analytics: false,
+      marketing: false,
+      preferences: false,
     });
   };
 
@@ -246,6 +260,13 @@ export default function CookieConsent() {
               className="rounded-full bg-black px-6 py-3.5 text-sm font-bold text-white transition-colors hover:bg-[#2f5b7c]"
             >
               Accept all
+            </button>
+            <button
+              type="button"
+              onClick={rejectOptional}
+              className="rounded-full border border-black/15 px-6 py-3.5 text-sm font-bold text-black transition-colors hover:border-black hover:bg-black hover:text-white"
+            >
+              Reject optional
             </button>
 
             {showSettings ? (

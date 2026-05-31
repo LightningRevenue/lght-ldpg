@@ -1,8 +1,12 @@
 "use client";
 
 import React, { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/lib/i18n';
+import { getHomeDictionary } from '@/i18n/get-home-dictionary';
 
 export default function Newsletter() {
+  const t = getHomeDictionary(getLanguageFromPathname(usePathname())).newsletter;
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -29,13 +33,13 @@ export default function Newsletter() {
 
       if (!response.ok) {
         const result = (await response.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(result?.error || "The subscription could not be saved.");
+        throw new Error(result?.error || t.error);
       }
 
       setIsSubmitted(true);
       setEmail("");
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "The subscription could not be saved.");
+      setSubmitError(error instanceof Error ? error.message : t.error);
     } finally {
       setIsSubmitting(false);
     }
@@ -45,20 +49,20 @@ export default function Newsletter() {
     <section className="relative w-full bg-white z-10 py-32 px-6">
       <div className="max-w-4xl mx-auto text-center bg-[#fafafa] rounded-[2rem] sm:rounded-[3rem] p-10 sm:p-20 border border-black/[0.05]">
         
-        <div className="text-xs font-bold text-black/30 mb-6 uppercase tracking-[0.2em]">The Insight</div>
+        <div className="text-xs font-bold text-black/30 mb-6 uppercase tracking-[0.2em]">{t.eyebrow}</div>
         
         <h2 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-black mb-8">
-          Weekly intelligence.
+          {t.title}
         </h2>
         
         <p className="text-black/50 font-light max-w-lg mx-auto text-base sm:text-lg mb-12 leading-relaxed">
-          Join 5,000+ industry leaders who receive our unfiltered thoughts on digital scaling, technical execution, and agency operations.
+          {t.description}
         </p>
 
         <form onSubmit={handleSubmit} className="relative max-w-md mx-auto flex items-center group">
           <input 
             type="email" 
-            placeholder="name@company.com" 
+            placeholder={t.placeholder}
             value={email}
             onChange={(event) => {
               setEmail(event.target.value);
@@ -73,7 +77,7 @@ export default function Newsletter() {
             disabled={isSubmitting}
             className="absolute right-2 top-1/2 -translate-y-1/2 bg-black text-white text-[13px] font-medium py-2.5 px-6 rounded-full hover:bg-black/90 hover:scale-[1.02] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Saving..." : "Subscribe"}
+            {isSubmitting ? t.saving : t.submit}
           </button>
         </form>
 
@@ -81,11 +85,11 @@ export default function Newsletter() {
           <p className="text-sm text-red-600 mt-5">{submitError}</p>
         )}
         {isSubmitted && (
-          <p className="text-sm text-emerald-600 mt-5">You are on the approved insight list.</p>
+          <p className="text-sm text-emerald-600 mt-5">{t.success}</p>
         )}
         
         <p className="text-[11px] text-black/30 mt-6 font-light tracking-wide uppercase">
-          No spam. Unsubscribe at any time.
+          {t.note}
         </p>
       </div>
     </section>

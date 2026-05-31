@@ -1,31 +1,24 @@
+"use client";
+
 import React from 'react';
-
-const painPoints = [
-  'Posting generic, corporate content that gets zero engagement and damages brand perception.',
-  'Treating all platforms the same, completely ignoring the unique algorithmic demands of TikTok vs LinkedIn.',
-  'Chasing vanity metrics (likes, followers) that never actually translate into bottom-line revenue.',
-  'An inconsistent posting schedule that causes algorithms to completely bury your organic reach.',
-];
-
-const outcomes = [
-  "Producing scroll-stopping, high-retention content that natively fits each platform's culture.",
-  "Developing platform-specific strategies tailored to the algorithm's current distribution rules.",
-  'Architecting social funnels specifically designed to turn raw attention into qualified leads.',
-  'Operating an unrelenting content engine that maintains hyper-visibility 365 days a year.',
-];
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/i18n/config';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 
 export default function SMMPainPoints() {
+  const t = getServicesDictionary(
+    getLanguageFromPathname(usePathname())
+  ).smm.painPoints;
+
   return (
     <section className="relative z-10 py-32 px-6 bg-[#fafafa] w-full border-t border-black/5 rounded-t-[3rem] sm:rounded-t-[4rem] shadow-[0_-20px_40px_rgba(0,0,0,0.03)]">
       <div className="max-w-7xl mx-auto">
         <div className="mb-16 text-center sm:text-left">
           <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-black mb-4">
-            From Noise to Dominance.
+            {t.title}
           </h2>
           <p className="text-black/50 font-light text-lg max-w-2xl">
-            Most brands are completely invisible on social media. We engineer
-            content frameworks that hack algorithms and monopolize attention in
-            your niche.
+            {t.description}
           </p>
         </div>
 
@@ -49,12 +42,12 @@ export default function SMMPainPoints() {
                 </svg>
               </div>
               <h3 className="text-2xl font-medium text-black/80">
-                Common Reality
+                {t.realityTitle}
               </h3>
             </div>
 
             <div className="flex flex-col gap-6 flex-1">
-              {painPoints.map((point, idx) => (
+              {t.painPoints.map((point, idx) => (
                 <div key={idx} className="flex items-start gap-4 group">
                   <div className="w-6 h-6 rounded-full border border-black/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:border-black/30 transition-colors">
                     <span className="w-1.5 h-1.5 bg-black/20 rounded-full"></span>
@@ -88,12 +81,12 @@ export default function SMMPainPoints() {
                 </svg>
               </div>
               <h3 className="text-2xl font-medium text-white">
-                The LightningRevenue Standard
+                {t.standardTitle}
               </h3>
             </div>
 
             <div className="relative z-10 flex flex-col gap-6 flex-1">
-              {outcomes.map((outcome, idx) => (
+              {t.outcomes.map((outcome, idx) => (
                 <div key={idx} className="flex items-start gap-4 group">
                   <div className="w-6 h-6 rounded-full border border-[#2f5b7c]/50 bg-[#2f5b7c]/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-[#2f5b7c]/30 transition-colors">
                     <span className="w-1.5 h-1.5 bg-white rounded-full"></span>

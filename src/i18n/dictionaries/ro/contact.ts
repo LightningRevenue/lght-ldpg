@@ -1,0 +1,57 @@
+import type { ContactDictionary } from '@/i18n/types';
+
+export const contact: ContactDictionary = {
+  availability: 'Acceptăm proiecte noi',
+  title: 'Contact',
+  titleGhost: 'LightningRevenue.',
+  description:
+    'Spune-ne ce construiești, unde este blocată creșterea și ce timeline contează. Direcționăm cererea către strategul potrivit înainte de primul call.',
+  stats: [
+    { label: 'Timp de răspuns', value: '24h' },
+    { label: 'Format discovery', value: 'Video' },
+    { label: 'Claritate scope', value: '100%' },
+  ],
+  direct: 'Direct',
+  email: 'Email',
+  timezone: 'Fus orar',
+  timezoneValue: 'Overlap EU / US',
+  bestFit: 'Potrivire ideală',
+  bestFitValue: 'Echipe de growth și build',
+  form: {
+    service: 'Serviciu',
+    budget: 'Buget',
+    timeline: 'Timeline',
+    namePlaceholder: 'Nume complet',
+    emailPlaceholder: 'Email de business',
+    companyPlaceholder: 'URL sau nume companie',
+    messagePlaceholder: 'Ce ar trebui să știm înainte să discutăm?',
+    serviceOptions: [
+      'Management PPC',
+      'Optimizare SEO',
+      'Dezvoltare web',
+      'Dezvoltare software',
+      'Social Media Management',
+      'Design UI/UX',
+      'Lead Generation',
+      'Setup tool-uri sales',
+      'Scope custom',
+    ],
+    budgetOptions: [
+      'Sub $5k',
+      '$5k - $15k',
+      '$15k - $50k',
+      '$50k - $150k',
+      '$150k+',
+    ],
+    timelineOptions: [
+      'Imediat',
+      'Luna aceasta',
+      'Trimestrul acesta',
+      'Planificare viitoare',
+    ],
+    error: 'Cererea nu a putut fi trimisă.',
+    success: 'Cererea a fost trimisă. Revenim în scurt timp.',
+    submitting: 'Se trimite...',
+    submit: 'Trimite cererea',
+  },
+};

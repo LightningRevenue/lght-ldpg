@@ -3,23 +3,42 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
+import {
+  getLanguageFromPathname,
+  localizePath,
+  stripLanguageFromPathname,
+} from '@/lib/i18n';
+import { getCommonDictionary } from '@/i18n/get-common-dictionary';
 
 const languages = [
   { code: 'en', label: 'English', shortLabel: 'EN', flag: '/languages/english.png' },
   { code: 'ro', label: 'Romanian', shortLabel: 'RO', flag: '/languages/romanian.png' },
-  { code: 'it', label: 'Italian', shortLabel: 'IT', flag: '/languages/italian.webp' },
-  { code: 'es', label: 'Spanish', shortLabel: 'ES', flag: '/languages/spanish.webp' },
 ];
 
 const languageStorageKey = 'lrvn_language';
 
+const isRomanianRestrictedService = (path: string, language: string) =>
+  language === 'ro' &&
+  ['/services/lead-generation', '/services/sales-setup'].includes(path);
+
+const isRomanianRestrictedExpertise = (path: string, language: string) =>
+  language === 'ro' &&
+  ['/expertise/sla', '/expertise/account-manager'].includes(path);
+
 export default function Navbar() {
+  const pathname = usePathname();
+  const router = useRouter();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileServicesOpen, setMobileServicesOpen] = useState(false);
   const [mobileExpertiseOpen, setMobileExpertiseOpen] = useState(false);
   const [languageOpen, setLanguageOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState(languages[0]);
+  const [selectedLanguage, setSelectedLanguage] = useState(
+    languages.find(item => item.code === getLanguageFromPathname(pathname)) ||
+      languages[0],
+  );
+  const t = getCommonDictionary(selectedLanguage.code).nav;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -30,13 +49,17 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
+    const pathLanguage = getLanguageFromPathname(pathname);
     const storedLanguage = window.localStorage.getItem(languageStorageKey);
-    const language = languages.find(item => item.code === storedLanguage);
+    const language =
+      languages.find(item => item.code === pathLanguage) ||
+      languages.find(item => item.code === storedLanguage);
 
     if (language) {
       setSelectedLanguage(language);
+      window.localStorage.setItem(languageStorageKey, language.code);
     }
-  }, []);
+  }, [pathname]);
 
   // Lock body scroll when mobile menu is open
   useEffect(() => {
@@ -59,11 +82,27 @@ export default function Navbar() {
 
   const chooseLanguage = (code: string) => {
     const language = languages.find(item => item.code === code) || languages[0];
+    const basePath = stripLanguageFromPathname(pathname);
+    let targetPath = basePath;
+
+    if (isRomanianRestrictedService(basePath, language.code)) {
+      targetPath = '/services/unavailable';
+    }
+
+    if (isRomanianRestrictedExpertise(basePath, language.code)) {
+      targetPath = '/expertise/unavailable';
+    }
 
     setSelectedLanguage(language);
     setLanguageOpen(false);
     window.localStorage.setItem(languageStorageKey, language.code);
+    router.push(localizePath(targetPath, language.code));
   };
+
+  const href = (path: string) => localizePath(path, selectedLanguage.code);
+  const showServiceLink = (path: string) =>
+    !isRomanianRestrictedService(path, selectedLanguage.code);
+  const showExpertise = selectedLanguage.code !== 'ro';
 
   return (
     <>
@@ -77,16 +116,18 @@ export default function Navbar() {
         >
           {/* Logo */}
           <Link
-            href="/"
+            href={href('/')}
             className="relative z-20 flex min-w-[150px] items-center"
             aria-label="LightningRevenue home"
           >
             <Image
               src="/logo-lrvn.png"
               alt="LightningRevenue"
-              width={168}
+              width={92}
               height={40}
               priority
+              loading="eager"
+              fetchPriority="high"
               className="h-10 w-auto object-contain sm:h-9"
             />
           </Link>
@@ -96,7 +137,7 @@ export default function Navbar() {
             {/* Servicii Dropdown */}
             <div className="group relative">
               <button className="text-[14px] font-bold tracking-wide text-black/70 hover:text-black transition-colors duration-300 py-4 flex items-center gap-1.5">
-                Services
+                {t.services}
                 <svg
                   className="w-3.5 h-3.5 opacity-50 group-hover:rotate-180 transition-transform duration-300"
                   fill="none"
@@ -116,108 +157,113 @@ export default function Navbar() {
                   <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-t border-l border-black/10 rotate-45"></div>
                   <div className="relative z-10 flex flex-col gap-1">
                     <Link
-                      href="/services/ppc"
+                      href={href('/services/ppc')}
                       className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
                     >
                       PPC
                     </Link>
                     <Link
-                      href="/services/seo"
+                      href={href('/services/seo')}
                       className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
                     >
                       SEO
                     </Link>
                     <Link
-                      href="/services/web-development"
+                      href={href('/services/web-development')}
                       className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
                     >
                       Web Development
                     </Link>
                     <Link
-                      href="/services/software-development"
+                      href={href('/services/software-development')}
                       className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
                     >
                       Software Development
                     </Link>
                     <Link
-                      href="/services/smm"
+                      href={href('/services/smm')}
                       className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
                     >
                       SMM
                     </Link>
                     <Link
-                      href="/services/ui-ux"
+                      href={href('/services/ui-ux')}
                       className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
                     >
                       UI/UX
                     </Link>
-                    <Link
-                      href="/services/lead-generation"
-                      className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
-                    >
-                      Lead Generation
-                    </Link>
-                    <Link
-                      href="/services/sales-setup"
-                      className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
-                    >
-                      Sales Tools Set-Up
-                    </Link>
+                    {showServiceLink('/services/lead-generation') && (
+                      <Link
+                        href={href('/services/lead-generation')}
+                        className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
+                      >
+                        Lead Generation
+                      </Link>
+                    )}
+                    {showServiceLink('/services/sales-setup') && (
+                      <Link
+                        href={href('/services/sales-setup')}
+                        className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
+                      >
+                        Sales Tools Set-Up
+                      </Link>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Expertise Dropdown */}
-            <div className="group relative">
-              <button className="text-[14px] font-bold tracking-wide text-black/70 hover:text-black transition-colors duration-300 py-4 flex items-center gap-1.5">
-                Expertise
-                <svg
-                  className="w-3.5 h-3.5 opacity-50 group-hover:rotate-180 transition-transform duration-300"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-              <div className="absolute top-[calc(100%-0.5rem)] left-1/2 -translate-x-1/2 pt-4 opacity-0 translate-y-2 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]">
-                <div className="bg-white/95 backdrop-blur-2xl border border-black/10 rounded-2xl p-2 w-64 shadow-[0_16px_40px_-10px_rgba(0,0,0,0.1)] relative">
-                  <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-t border-l border-black/10 rotate-45"></div>
-                  <div className="relative z-10 flex flex-col gap-1">
-                    <Link
-                      href="/expertise/sla"
-                      className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
-                    >
-                      SLA
-                    </Link>
-                    <Link
-                      href="/expertise/account-manager"
-                      className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
-                    >
-                      Account Manager
-                    </Link>
+            {showExpertise && (
+              <div className="group relative">
+                <button className="text-[14px] font-bold tracking-wide text-black/70 hover:text-black transition-colors duration-300 py-4 flex items-center gap-1.5">
+                  {t.expertise}
+                  <svg
+                    className="w-3.5 h-3.5 opacity-50 group-hover:rotate-180 transition-transform duration-300"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 9l-7 7-7-7"
+                    />
+                  </svg>
+                </button>
+                <div className="absolute top-[calc(100%-0.5rem)] left-1/2 -translate-x-1/2 pt-4 opacity-0 translate-y-2 invisible group-hover:opacity-100 group-hover:translate-y-0 group-hover:visible transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)]">
+                  <div className="bg-white/95 backdrop-blur-2xl border border-black/10 rounded-2xl p-2 w-64 shadow-[0_16px_40px_-10px_rgba(0,0,0,0.1)] relative">
+                    <div className="absolute -top-1.5 left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-t border-l border-black/10 rotate-45"></div>
+                    <div className="relative z-10 flex flex-col gap-1">
+                      <Link
+                        href={href('/expertise/sla')}
+                        className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
+                      >
+                        SLA
+                      </Link>
+                      <Link
+                        href={href('/expertise/account-manager')}
+                        className="text-[14px] font-bold text-black/70 hover:text-black hover:bg-slate-50 px-4 py-2.5 rounded-xl transition-all duration-200"
+                      >
+                        Account Manager
+                      </Link>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
+            )}
 
             <Link
-              href="/about"
+              href={href('/about')}
               className="text-[14px] font-bold tracking-wide text-black/70 hover:text-black transition-colors duration-300 py-4"
             >
-              About Us
+              {t.about}
             </Link>
             <Link
-              href="/contact"
+              href={href('/contact')}
               className="text-[14px] font-bold tracking-wide text-black/70 hover:text-black transition-colors duration-300 py-4"
             >
-              Contact
+              {t.contact}
             </Link>
           </nav>
 
@@ -271,10 +317,10 @@ export default function Navbar() {
             </div>
 
             <Link
-              href="/contact"
+              href={href('/contact')}
               className="hidden lg:flex items-center justify-center px-6 py-2.5 text-[14px] font-semibold tracking-wide text-white bg-black rounded-full hover:scale-105 hover:bg-black/90 hover:shadow-lg transition-all duration-400 ease-[cubic-bezier(0.16,1,0.3,1)] whitespace-nowrap"
             >
-              Start Project
+              {t.startProject}
             </Link>
 
             {/* Mobile Hamburger */}
@@ -307,7 +353,7 @@ export default function Navbar() {
         {/* Mobile Header */}
         <div className="flex items-center justify-between px-6 py-6 border-b border-black/5 shrink-0">
           <Link
-            href="/"
+            href={href('/')}
             onClick={closeMobile}
             className="flex items-center"
             aria-label="LightningRevenue home"
@@ -315,8 +361,10 @@ export default function Navbar() {
             <Image
               src="/logo-lrvn.png"
               alt="LightningRevenue"
-              width={176}
+              width={92}
               height={42}
+              loading="eager"
+              fetchPriority="high"
               className="h-10 w-auto object-contain"
             />
           </Link>
@@ -350,7 +398,7 @@ export default function Navbar() {
                 onClick={() => setMobileServicesOpen(!mobileServicesOpen)}
                 className="w-full flex items-center justify-between py-4 text-lg font-bold text-black"
               >
-                Services
+                {t.services}
                 <svg
                   className={`w-4 h-4 text-black/40 transition-transform duration-300 ${mobileServicesOpen ? 'rotate-180' : ''}`}
                   fill="none"
@@ -370,61 +418,65 @@ export default function Navbar() {
               >
                 <div className="flex flex-col gap-1 pl-4 pb-4 border-l-2 border-black/5 ml-2">
                   <Link
-                    href="/services/ppc"
+                    href={href('/services/ppc')}
                     onClick={closeMobile}
                     className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
                   >
                     PPC
                   </Link>
                   <Link
-                    href="/services/seo"
+                    href={href('/services/seo')}
                     onClick={closeMobile}
                     className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
                   >
                     SEO
                   </Link>
                   <Link
-                    href="/services/web-development"
+                    href={href('/services/web-development')}
                     onClick={closeMobile}
                     className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
                   >
                     Web Development
                   </Link>
                   <Link
-                    href="/services/software-development"
+                    href={href('/services/software-development')}
                     onClick={closeMobile}
                     className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
                   >
                     Software Development
                   </Link>
                   <Link
-                    href="/services/smm"
+                    href={href('/services/smm')}
                     onClick={closeMobile}
                     className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
                   >
                     SMM
                   </Link>
                   <Link
-                    href="/services/ui-ux"
+                    href={href('/services/ui-ux')}
                     onClick={closeMobile}
                     className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
                   >
                     UI/UX
                   </Link>
-                  <Link
-                    href="/services/lead-generation"
-                    onClick={closeMobile}
-                    className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
-                  >
-                    Lead Generation
-                  </Link>
-                  <Link
-                    href="/services/sales-setup"
-                    onClick={closeMobile}
-                    className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
-                  >
-                    Sales Tools Set-Up
-                  </Link>
+                  {showServiceLink('/services/lead-generation') && (
+                    <Link
+                      href={href('/services/lead-generation')}
+                      onClick={closeMobile}
+                      className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
+                    >
+                      Lead Generation
+                    </Link>
+                  )}
+                  {showServiceLink('/services/sales-setup') && (
+                    <Link
+                      href={href('/services/sales-setup')}
+                      onClick={closeMobile}
+                      className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
+                    >
+                      Sales Tools Set-Up
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
@@ -432,74 +484,76 @@ export default function Navbar() {
             {/* Divider */}
             <div className="h-px bg-black/5"></div>
 
-            {/* Expertise Accordion */}
-            <div>
-              <button
-                onClick={() => setMobileExpertiseOpen(!mobileExpertiseOpen)}
-                className="w-full flex items-center justify-between py-4 text-lg font-bold text-black"
-              >
-                Expertise
-                <svg
-                  className={`w-4 h-4 text-black/40 transition-transform duration-300 ${mobileExpertiseOpen ? 'rotate-180' : ''}`}
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 9l-7 7-7-7"
-                  />
-                </svg>
-              </button>
-              <div
-                className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${mobileExpertiseOpen ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}
-              >
-                <div className="flex flex-col gap-1 pl-4 pb-4 border-l-2 border-black/5 ml-2">
-                  <Link
-                    href="/expertise/sla"
-                    onClick={closeMobile}
-                    className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
+            {showExpertise && (
+              <>
+                <div>
+                  <button
+                    onClick={() => setMobileExpertiseOpen(!mobileExpertiseOpen)}
+                    className="w-full flex items-center justify-between py-4 text-lg font-bold text-black"
                   >
-                    SLA
-                  </Link>
-                  <Link
-                    href="/expertise/account-manager"
-                    onClick={closeMobile}
-                    className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
+                    {t.expertise}
+                    <svg
+                      className={`w-4 h-4 text-black/40 transition-transform duration-300 ${mobileExpertiseOpen ? 'rotate-180' : ''}`}
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
+                  </button>
+                  <div
+                    className={`overflow-hidden transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${mobileExpertiseOpen ? 'max-h-[300px] opacity-100' : 'max-h-0 opacity-0'}`}
                   >
-                    Account Manager
-                  </Link>
+                    <div className="flex flex-col gap-1 pl-4 pb-4 border-l-2 border-black/5 ml-2">
+                      <Link
+                        href={href('/expertise/sla')}
+                        onClick={closeMobile}
+                        className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
+                      >
+                        SLA
+                      </Link>
+                      <Link
+                        href={href('/expertise/account-manager')}
+                        onClick={closeMobile}
+                        className="text-[15px] font-medium text-black/60 hover:text-black py-2.5 px-3 rounded-xl hover:bg-black/[0.03] transition-all"
+                      >
+                        Account Manager
+                      </Link>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
 
-            {/* Divider */}
-            <div className="h-px bg-black/5"></div>
+                <div className="h-px bg-black/5"></div>
+              </>
+            )}
 
             {/* Direct Links */}
             <Link
-              href="/about"
+              href={href('/about')}
               onClick={closeMobile}
               className="py-4 text-lg font-bold text-black hover:text-[#2f5b7c] transition-colors"
             >
-              About Us
+              {t.about}
             </Link>
             <div className="h-px bg-black/5"></div>
             <Link
-              href="/contact"
+              href={href('/contact')}
               onClick={closeMobile}
               className="py-4 text-lg font-bold text-black hover:text-[#2f5b7c] transition-colors"
             >
-              Contact
+              {t.contact}
             </Link>
 
             <div className="h-px bg-black/5"></div>
 
             <div className="py-4">
               <div className="mb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-black/30">
-                Language
+                {t.language}
               </div>
               <div className="grid grid-cols-2 gap-2">
                 {languages.map(language => (
@@ -531,18 +585,18 @@ export default function Navbar() {
         {/* Mobile Footer CTAs */}
         <div className="px-6 py-6 border-t border-black/5 shrink-0 flex flex-col gap-3">
           <Link
-            href="/contact"
+            href={href('/contact')}
             onClick={closeMobile}
             className="w-full flex items-center justify-center px-6 py-3.5 text-[15px] font-bold text-white bg-black rounded-2xl hover:bg-black/90 transition-all"
           >
-            Start Project
+            {t.startProject}
           </Link>
           <Link
-            href="/contact"
+            href={href('/contact')}
             onClick={closeMobile}
             className="w-full flex items-center justify-center px-6 py-3.5 text-[15px] font-bold text-black bg-black/5 rounded-2xl hover:bg-black/10 transition-all"
           >
-            Contact
+            {t.contact}
           </Link>
         </div>
       </div>

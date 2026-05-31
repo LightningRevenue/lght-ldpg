@@ -1,38 +1,25 @@
 "use client";
 
 import React, { useState } from 'react';
-
-const softwareFaqs = [
-  {
-    question: "Do you take over existing legacy codebases?",
-    answer: "Yes, but only after a rigorous technical audit. If the technical debt is too severe, we will recommend a strangler fig pattern to gradually rewrite the monolith into microservices, rather than building on a broken foundation."
-  },
-  {
-    question: "What development methodology do you use?",
-    answer: "We strictly adhere to Agile Scrum methodologies. You will have full transparency via Jira or Linear, daily stand-up notes, and two-week sprint deliverables. You are never left in the dark about progress."
-  },
-  {
-    question: "How do you handle security and data compliance?",
-    answer: "Security is engineered into our architecture from day one, not added as an afterthought. We implement SOC2 compliant practices, data encryption at rest and in transit, and conduct automated vulnerability scanning before every deployment."
-  },
-  {
-    question: "Do we own the Intellectual Property (IP)?",
-    answer: "Absolutely. We are an engineering partner, not a software licensing firm. Upon final invoice settlement, all source code, architecture diagrams, cloud environments, and IP are completely legally transferred to your company."
-  }
-];
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/i18n/config';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 
 export default function SoftwareFAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const t = getServicesDictionary(
+    getLanguageFromPathname(usePathname())
+  ).softwareDevelopment.faq;
 
   return (
     <section className="relative w-full bg-[#fafafa] z-10 py-32 px-6">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-black mb-16 text-center">
-          Engineering Logistics.
+          {t.title}
         </h2>
 
         <div className="flex flex-col border-t border-black/10">
-          {softwareFaqs.map((faq, index) => {
+          {t.items.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
               <div key={index} className="border-b border-black/10">

@@ -1,31 +1,22 @@
+'use client';
+
 import React from 'react';
-
-const painPoints = [
-  'Paying for organic traffic that never converts into actual pipeline.',
-  'Getting penalized by algorithm updates due to shady, outdated tactics.',
-  'Publishing endless blog posts that nobody actually searches for or reads.',
-  "Ranking for 'vanity' keywords with absolutely zero commercial intent.",
-];
-
-const outcomes = [
-  'Capturing high-intent, bottom-of-funnel buyers actively seeking solutions.',
-  'Building an ironclad technical foundation immune to core algorithm penalties.',
-  'Deploying content clusters that systematically dominate entire industry topics.',
-  'Ranking for search terms that have a direct, measurable impact on revenue.',
-];
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/lib/i18n';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 
 export default function SEOPainPoints() {
+  const t = getServicesDictionary(getLanguageFromPathname(usePathname())).seo.painPoints;
+
   return (
     <section className="relative z-10 py-32 px-6 bg-[#fafafa] w-full border-t border-black/5 rounded-t-[3rem] sm:rounded-t-[4rem] shadow-[0_-20px_40px_rgba(0,0,0,0.03)]">
       <div className="max-w-7xl mx-auto">
         <div className="mb-16 text-center sm:text-left">
           <h2 className="text-3xl sm:text-5xl font-medium tracking-tight text-black mb-4">
-            From Obscurity to Authority.
+            {t.title}
           </h2>
           <p className="text-black/50 font-light text-lg max-w-2xl">
-            Most SEO campaigns are built on blind guesswork and vanity metrics.
-            We engineer authoritative search architectures that drive actual
-            revenue.
+            {t.description}
           </p>
         </div>
 
@@ -49,12 +40,12 @@ export default function SEOPainPoints() {
                 </svg>
               </div>
               <h3 className="text-2xl font-medium text-black/80">
-                Common Reality
+                {t.realityTitle}
               </h3>
             </div>
 
             <div className="flex flex-col gap-6 flex-1">
-              {painPoints.map((point, idx) => (
+              {t.painPoints.map((point, idx) => (
                 <div key={idx} className="flex items-start gap-4 group">
                   <div className="w-6 h-6 rounded-full border border-black/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:border-black/30 transition-colors">
                     <span className="w-1.5 h-1.5 bg-black/20 rounded-full"></span>
@@ -88,12 +79,12 @@ export default function SEOPainPoints() {
                 </svg>
               </div>
               <h3 className="text-2xl font-medium text-white">
-                The LightningRevenue Standard
+                {t.standardTitle}
               </h3>
             </div>
 
             <div className="relative z-10 flex flex-col gap-6 flex-1">
-              {outcomes.map((outcome, idx) => (
+              {t.outcomes.map((outcome, idx) => (
                 <div key={idx} className="flex items-start gap-4 group">
                   <div className="w-6 h-6 rounded-full border border-[#2f5b7c]/50 bg-[#2f5b7c]/10 flex items-center justify-center shrink-0 mt-0.5 group-hover:bg-[#2f5b7c]/30 transition-colors">
                     <span className="w-1.5 h-1.5 bg-white rounded-full"></span>

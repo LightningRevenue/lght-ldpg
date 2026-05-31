@@ -1,38 +1,25 @@
 "use client";
 
 import React, { useState } from 'react';
-
-const devFaqs = [
-  {
-    question: "What tech stack do you use?",
-    answer: "We primarily build modern, headless architectures using Next.js, React, and Tailwind CSS on the frontend. For the backend and content management, we leverage Sanity, Shopify, or custom Node.js APIs depending on your requirements."
-  },
-  {
-    question: "How long does a custom build take?",
-    answer: "A standard high-performance marketing site typically takes 4-6 weeks from discovery to launch. Complex web applications or headless commerce builds usually range from 8 to 12 weeks."
-  },
-  {
-    question: "Do you provide ongoing maintenance?",
-    answer: "Yes. We offer strict SLA-backed retainers to ensure your application remains secure, updated, and continuously optimized. We handle server monitoring, dependency updates, and continuous performance tuning."
-  },
-  {
-    question: "Who owns the code?",
-    answer: "You do. We believe in total transparency and zero vendor lock-in. Upon final payment, all intellectual property, source code, repositories, and assets are transferred entirely to your organization."
-  }
-];
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/i18n/config';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 
 export default function DevFAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const t = getServicesDictionary(
+    getLanguageFromPathname(usePathname())
+  ).webDevelopment.faq;
 
   return (
     <section className="relative w-full bg-[#fafafa] z-10 py-32 px-6">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-black mb-16 text-center">
-          Development Logistics.
+          {t.title}
         </h2>
 
         <div className="flex flex-col border-t border-black/10">
-          {devFaqs.map((faq, index) => {
+          {t.items.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
               <div key={index} className="border-b border-black/10">

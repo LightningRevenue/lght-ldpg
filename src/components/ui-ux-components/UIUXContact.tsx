@@ -1,9 +1,13 @@
 "use client";
 
 import React, { useState } from 'react';
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/i18n/config';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 import { submitServiceRequest } from '@/lib/service-request-client';
 
 export default function UIUXContact() {
+  const t = getServicesDictionary(getLanguageFromPathname(usePathname())).uiUx.contact;
   const [phase, setPhase] = useState(1);
   const [formData, setFormData] = useState({
     challenge: '',
@@ -27,7 +31,7 @@ export default function UIUXContact() {
       setPhase(1);
       setFormData({ challenge: '', budget: '', appUrl: '', name: '', email: '' });
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "The request could not be submitted.");
+      setSubmitError(error instanceof Error ? error.message : t.error);
     } finally {
       setIsSubmitting(false);
     }
@@ -39,10 +43,10 @@ export default function UIUXContact() {
         
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-medium tracking-tight text-black mb-4">
-            Request a UX Audit.
+            {t.title}
           </h2>
           <p className="text-black/50 font-light text-lg">
-            Our lead designers will review your current interface and map out a high-conversion architecture.
+            {t.description}
           </p>
         </div>
 
@@ -52,8 +56,8 @@ export default function UIUXContact() {
           {/* Header */}
           <div className="flex justify-between items-center px-8 py-6 border-b border-black/5 bg-white z-10 shrink-0">
             <div className="flex items-center gap-4">
-              <span className="font-bold tracking-tight text-sm uppercase text-black">Design Scoping</span>
-              <span className="text-xs font-mono bg-black/5 text-black/50 px-2 py-1 rounded">Phase {phase} of 4</span>
+              <span className="font-bold tracking-tight text-sm uppercase text-black">{t.formTitle}</span>
+              <span className="text-xs font-mono bg-black/5 text-black/50 px-2 py-1 rounded">{t.phaseLabel(phase)}</span>
             </div>
             
             <div className="flex -space-x-2">
@@ -69,13 +73,13 @@ export default function UIUXContact() {
               {/* Phase 1: Challenge */}
               {phase === 1 && (
                 <div className="animate-fade-in-up w-full">
-                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">What's the main interface issue?</h3>
-                  <p className="text-black/50 font-light mb-8">Tell us what is broken about the current user experience or brand aesthetic.</p>
+                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">{t.challengeTitle}</h3>
+                  <p className="text-black/50 font-light mb-8">{t.challengeDescription}</p>
                   
                   <textarea 
                     value={formData.challenge}
                     onChange={(e) => setFormData({...formData, challenge: e.target.value})}
-                    placeholder="e.g. Users keep dropping off at the checkout phase, or our app looks like it was built in 2012..."
+                    placeholder={t.challengePlaceholder}
                     className="w-full h-32 p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-[#2f5b7c] resize-none text-black placeholder:text-black/30 text-sm"
                   ></textarea>
                 </div>
@@ -84,11 +88,11 @@ export default function UIUXContact() {
               {/* Phase 2: Budget */}
               {phase === 2 && (
                 <div className="animate-fade-in-up w-full">
-                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">Design Budget</h3>
-                  <p className="text-black/50 font-light mb-8">This determines the depth of the design system and prototyping we can deploy.</p>
+                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">{t.spendTitle}</h3>
+                  <p className="text-black/50 font-light mb-8">{t.spendDescription}</p>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {['Under $5k', '$5k - $10k', '$10k - $25k', '$25k+'].map(budgetTier => (
+                    {t.spendOptions.map(budgetTier => (
                       <button 
                         key={budgetTier}
                         onClick={() => setFormData({...formData, budget: budgetTier})}
@@ -109,14 +113,14 @@ export default function UIUXContact() {
               {/* Phase 3: URL */}
               {phase === 3 && (
                 <div className="animate-fade-in-up w-full">
-                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">Current App/Site URL</h3>
-                  <p className="text-black/50 font-light mb-8">Drop a link to your current platform or a Figma file if you have one.</p>
+                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">{t.websiteTitle}</h3>
+                  <p className="text-black/50 font-light mb-8">{t.websiteDescription}</p>
                   
                   <input 
                     type="url" 
                     value={formData.appUrl}
                     onChange={(e) => setFormData({...formData, appUrl: e.target.value})}
-                    placeholder="https://yourcompany.com"
+                    placeholder={t.websitePlaceholder}
                     className="w-full p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-[#2f5b7c] text-black placeholder:text-black/30 text-sm"
                   />
                 </div>
@@ -125,20 +129,20 @@ export default function UIUXContact() {
               {/* Phase 4: Contact */}
               {phase === 4 && (
                 <div className="animate-fade-in-up w-full text-center">
-                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">Where should we send the audit?</h3>
-                  <p className="text-black/50 font-light mb-10">We'll review your interface and email you a direct video breakdown.</p>
+                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">{t.contactTitle}</h3>
+                  <p className="text-black/50 font-light mb-10">{t.contactDescription}</p>
                   
                   <div className="flex flex-col gap-4 max-w-sm mx-auto">
                     <input 
                       type="text" 
-                      placeholder="Full Name" 
+                      placeholder={t.namePlaceholder} 
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                       className="w-full p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-[#2f5b7c] text-black placeholder:text-black/30 text-sm"
                     />
                     <input 
                       type="email" 
-                      placeholder="Work Email" 
+                      placeholder={t.emailPlaceholder} 
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
                       className="w-full p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-[#2f5b7c] text-black placeholder:text-black/30 text-sm"
@@ -147,7 +151,7 @@ export default function UIUXContact() {
                       <p className="text-sm text-red-600">{submitError}</p>
                     )}
                     {isSubmitted && (
-                      <p className="text-sm text-emerald-600">Request submitted.</p>
+                      <p className="text-sm text-emerald-600">{t.success}</p>
                     )}
                   </div>
                 </div>
@@ -165,7 +169,7 @@ export default function UIUXContact() {
                 onClick={() => setPhase(phase - 1)} 
                 className="px-6 py-3 text-sm font-medium text-black/50 hover:text-black transition-colors"
               >
-                Back
+                {t.back}
               </button>
             )}
 
@@ -175,7 +179,7 @@ export default function UIUXContact() {
                 disabled={(phase === 1 && !formData.challenge) || (phase === 2 && !formData.budget) || (phase === 3 && !formData.appUrl)}
                 className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-[#2f5b7c] transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Next Step
+                {t.nextStep}
               </button>
             ) : (
               <button 
@@ -183,7 +187,7 @@ export default function UIUXContact() {
                 disabled={!formData.name || !formData.email || isSubmitting}
                 className="px-8 py-3 bg-[#2f5b7c] text-white rounded-full text-sm font-medium hover:bg-black transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Submitting..." : "Request Audit"}
+                {isSubmitting ? t.submitting : t.submit}
               </button>
             )}
           </div>

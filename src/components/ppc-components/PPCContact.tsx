@@ -2,8 +2,12 @@
 
 import React, { useState } from 'react';
 import { submitServiceRequest } from '@/lib/service-request-client';
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/lib/i18n';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 
 export default function PPCContact() {
+  const t = getServicesDictionary(getLanguageFromPathname(usePathname())).ppc.contact;
   const [phase, setPhase] = useState(1);
   const [formData, setFormData] = useState({
     challenge: '',
@@ -27,7 +31,7 @@ export default function PPCContact() {
       setPhase(1);
       setFormData({ challenge: '', spend: '', website: '', name: '', email: '' });
     } catch (error) {
-      setSubmitError(error instanceof Error ? error.message : "The request could not be submitted.");
+      setSubmitError(error instanceof Error ? error.message : t.error);
     } finally {
       setIsSubmitting(false);
     }
@@ -39,10 +43,10 @@ export default function PPCContact() {
         
         <div className="text-center mb-16">
           <h2 className="text-4xl sm:text-5xl font-medium tracking-tight text-black mb-4">
-            Request a Free Account Audit.
+            {t.title}
           </h2>
           <p className="text-black/50 font-light text-lg">
-            Our senior engineers will dive into your setup and find exact points of leverage.
+            {t.description}
           </p>
         </div>
 
@@ -52,8 +56,8 @@ export default function PPCContact() {
           {/* Header */}
           <div className="flex justify-between items-center px-8 py-6 border-b border-black/5 bg-white z-10 shrink-0">
             <div className="flex items-center gap-4">
-              <span className="font-bold tracking-tight text-sm uppercase text-black">Audit Application</span>
-              <span className="text-xs font-mono bg-black/5 text-black/50 px-2 py-1 rounded">Phase {phase} of 4</span>
+              <span className="font-bold tracking-tight text-sm uppercase text-black">{t.formTitle}</span>
+              <span className="text-xs font-mono bg-black/5 text-black/50 px-2 py-1 rounded">{t.phaseLabel(phase)}</span>
             </div>
             
             <div className="flex -space-x-2">
@@ -69,13 +73,13 @@ export default function PPCContact() {
               {/* Phase 1: Challenge */}
               {phase === 1 && (
                 <div className="animate-fade-in-up w-full">
-                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">What's the main issue?</h3>
-                  <p className="text-black/50 font-light mb-8">Before we look at the numbers, tell us what's hurting your growth.</p>
+                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">{t.challengeTitle}</h3>
+                  <p className="text-black/50 font-light mb-8">{t.challengeDescription}</p>
                   
                   <textarea 
                     value={formData.challenge}
                     onChange={(e) => setFormData({...formData, challenge: e.target.value})}
-                    placeholder="e.g. We get traffic, but CPAs are too high and lead quality is dropping..."
+                    placeholder={t.challengePlaceholder}
                     className="w-full h-32 p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-[#2f5b7c] resize-none text-black placeholder:text-black/30 text-sm"
                   ></textarea>
                 </div>
@@ -84,11 +88,11 @@ export default function PPCContact() {
               {/* Phase 2: Spend */}
               {phase === 2 && (
                 <div className="animate-fade-in-up w-full">
-                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">Monthly Ad Spend</h3>
-                  <p className="text-black/50 font-light mb-8">This helps us assign the right strategist to your audit.</p>
+                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">{t.spendTitle}</h3>
+                  <p className="text-black/50 font-light mb-8">{t.spendDescription}</p>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    {['Under $5,000', '$5,000 - $20,000', '$20,000 - $50,000', '$50,000+'].map(spendTier => (
+                    {t.spendOptions.map(spendTier => (
                       <button 
                         key={spendTier}
                         onClick={() => setFormData({...formData, spend: spendTier})}
@@ -109,14 +113,14 @@ export default function PPCContact() {
               {/* Phase 3: Website */}
               {phase === 3 && (
                 <div className="animate-fade-in-up w-full">
-                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">Where is traffic going?</h3>
-                  <p className="text-black/50 font-light mb-8">Drop your main URL or landing page so we can review the funnel.</p>
+                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">{t.websiteTitle}</h3>
+                  <p className="text-black/50 font-light mb-8">{t.websiteDescription}</p>
                   
                   <input 
                     type="url" 
                     value={formData.website}
                     onChange={(e) => setFormData({...formData, website: e.target.value})}
-                    placeholder="https://yourcompany.com"
+                    placeholder={t.websitePlaceholder}
                     className="w-full p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-[#2f5b7c] text-black placeholder:text-black/30 text-sm"
                   />
                 </div>
@@ -125,20 +129,20 @@ export default function PPCContact() {
               {/* Phase 4: Contact */}
               {phase === 4 && (
                 <div className="animate-fade-in-up w-full text-center">
-                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">Where should we send it?</h3>
-                  <p className="text-black/50 font-light mb-10">We'll review your setup and email you a direct video breakdown.</p>
+                  <h3 className="text-2xl sm:text-3xl font-medium mb-2 text-black">{t.contactTitle}</h3>
+                  <p className="text-black/50 font-light mb-10">{t.contactDescription}</p>
                   
                   <div className="flex flex-col gap-4 max-w-sm mx-auto">
                     <input 
                       type="text" 
-                      placeholder="Full Name" 
+                      placeholder={t.namePlaceholder}
                       value={formData.name}
                       onChange={(e) => setFormData({...formData, name: e.target.value})}
                       className="w-full p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-[#2f5b7c] text-black placeholder:text-black/30 text-sm"
                     />
                     <input 
                       type="email" 
-                      placeholder="Work Email" 
+                      placeholder={t.emailPlaceholder}
                       value={formData.email}
                       onChange={(e) => setFormData({...formData, email: e.target.value})}
                       className="w-full p-5 rounded-2xl border border-black/10 bg-white focus:outline-none focus:border-[#2f5b7c] text-black placeholder:text-black/30 text-sm"
@@ -147,7 +151,7 @@ export default function PPCContact() {
                       <p className="text-sm text-red-600">{submitError}</p>
                     )}
                     {isSubmitted && (
-                      <p className="text-sm text-emerald-600">Request submitted.</p>
+                      <p className="text-sm text-emerald-600">{t.success}</p>
                     )}
                   </div>
                 </div>
@@ -165,7 +169,7 @@ export default function PPCContact() {
                 onClick={() => setPhase(phase - 1)} 
                 className="px-6 py-3 text-sm font-medium text-black/50 hover:text-black transition-colors"
               >
-                Back
+                {t.back}
               </button>
             )}
 
@@ -175,7 +179,7 @@ export default function PPCContact() {
                 disabled={(phase === 1 && !formData.challenge) || (phase === 2 && !formData.spend) || (phase === 3 && !formData.website)}
                 className="px-8 py-3 bg-black text-white rounded-full text-sm font-medium hover:bg-[#2f5b7c] transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                Next Step
+                {t.nextStep}
               </button>
             ) : (
               <button 
@@ -183,7 +187,7 @@ export default function PPCContact() {
                 disabled={!formData.name || !formData.email || isSubmitting}
                 className="px-8 py-3 bg-[#2f5b7c] text-white rounded-full text-sm font-medium hover:bg-black transition-colors shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? "Submitting..." : "Request Audit"}
+                {isSubmitting ? t.submitting : t.submit}
               </button>
             )}
           </div>

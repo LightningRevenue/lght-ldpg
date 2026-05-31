@@ -1,38 +1,23 @@
 "use client";
 
 import React, { useState } from 'react';
-
-const uiuxFaqs = [
-  {
-    question: "What software do you use?",
-    answer: "Figma is our absolute source of truth for all wireframing, prototyping, and design systems. We also utilize Spline for 3D web elements, and tools like Hotjar for post-launch behavioral analysis."
-  },
-  {
-    question: "Do you also write the code?",
-    answer: "Yes. While we can work as a pure design agency and hand off Figma files to your internal team, our UI/UX department works seamlessly with our internal engineers to bring designs to life without losing any fidelity in translation."
-  },
-  {
-    question: "How many revisions do we get?",
-    answer: "We do not believe in arbitrary 'revision limits'. We operate in agile sprints, meaning you are involved in weekly review cycles. This constant collaboration eliminates massive surprises and the need for stressful 'final' revisions."
-  },
-  {
-    question: "Can you just redesign one page?",
-    answer: "We strongly advise against it. User experience is holistic. Fixing one landing page while the rest of the checkout funnel remains broken will not yield a positive ROI. We prefer to look at the entire user journey."
-  }
-];
+import { usePathname } from 'next/navigation';
+import { getLanguageFromPathname } from '@/i18n/config';
+import { getServicesDictionary } from '@/i18n/get-services-dictionary';
 
 export default function UIUXFAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const t = getServicesDictionary(getLanguageFromPathname(usePathname())).uiUx.faq;
 
   return (
     <section className="relative w-full bg-[#fafafa] z-10 py-32 px-6">
       <div className="max-w-4xl mx-auto">
         <h2 className="text-4xl sm:text-5xl md:text-6xl font-medium tracking-tight text-black mb-16 text-center">
-          Design Logistics.
+          {t.title}
         </h2>
 
         <div className="flex flex-col border-t border-black/10">
-          {uiuxFaqs.map((faq, index) => {
+          {t.items.map((faq, index) => {
             const isOpen = openIndex === index;
             return (
               <div key={index} className="border-b border-black/10">

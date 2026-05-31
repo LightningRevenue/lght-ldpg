@@ -7,6 +7,7 @@ import LeadGenAdvanced from '@/components/leadgen-components/LeadGenAdvanced';
 import LeadGenContact from '@/components/leadgen-components/LeadGenContact';
 import LeadGenFAQ from '@/components/leadgen-components/LeadGenFAQ';
 import { createPageMetadata } from '@/lib/seo-metadata';
+import { localizePath } from '@/lib/i18n';
 
 type PageProps = {
   params: Promise<{ lang: string }>;
@@ -21,7 +22,7 @@ export default async function LeadGenerationPage({ params }: PageProps) {
   const { lang } = await params;
 
   if (lang === 'ro') {
-    redirect('/ro/services/unavailable');
+    redirect(localizePath('/services/unavailable', lang));
   }
 
   return (

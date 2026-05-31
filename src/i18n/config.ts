@@ -4,6 +4,31 @@ export type SupportedLanguage = (typeof supportedLanguages)[number];
 
 export const defaultLanguage: SupportedLanguage = 'en';
 
+const localizedPaths: Partial<Record<SupportedLanguage, Record<string, string>>> = {
+  ro: {
+    '/services/ppc': '/servicii/promovare-ppc',
+    '/services/seo': '/servicii/optimizare-seo',
+    '/services/web-development': '/servicii/dezvoltare-web',
+    '/services/software-development': '/servicii/dezvoltare-software',
+    '/services/smm': '/servicii/social-media',
+    '/services/ui-ux': '/servicii/design-ui-ux',
+    '/services/unavailable': '/servicii/indisponibil',
+    '/about': '/despre',
+    '/contact': '/contact',
+    '/privacy': '/confidentialitate',
+    '/terms': '/termeni',
+  },
+};
+
+const localizedPathAliases: Record<string, string> = Object.fromEntries(
+  Object.values(localizedPaths).flatMap(paths =>
+    Object.entries(paths || {}).map(([internalPath, localizedPath]) => [
+      localizedPath,
+      internalPath,
+    ]),
+  ),
+);
+
 export function isSupportedLanguage(value: string): value is SupportedLanguage {
   return supportedLanguages.includes(value as SupportedLanguage);
 }
@@ -24,16 +49,18 @@ export function stripLanguageFromPathname(pathname: string): string {
     segments.shift();
   }
 
-  return segments.length ? `/${segments.join('/')}` : '/';
+  const path = segments.length ? `/${segments.join('/')}` : '/';
+  return localizedPathAliases[path] || path;
 }
 
 export function localizePath(path: string, language: string): string {
   const languageCode = normalizeLanguage(language);
   const cleanPath = path.startsWith('/') ? path : `/${path}`;
+  const localizedPath = localizedPaths[languageCode]?.[cleanPath] || cleanPath;
 
-  if (cleanPath === '/') {
+  if (localizedPath === '/') {
     return `/${languageCode}`;
   }
 
-  return `/${languageCode}${cleanPath}`;
+  return `/${languageCode}${localizedPath}`;
 }

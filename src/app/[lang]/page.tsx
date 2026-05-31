@@ -7,6 +7,8 @@ import AddOns from '@/components/AddOns';
 import EliteTiers from '@/components/EliteTiers';
 import FAQ from '@/components/FAQ';
 import Newsletter from '@/components/Newsletter';
+import StructuredData from '@/components/StructuredData';
+import { getOrganizationSchema, getWebSiteSchema } from '@/lib/schema';
 import { createPageMetadata } from '@/lib/seo-metadata';
 
 type PageProps = {
@@ -19,8 +21,11 @@ export async function generateMetadata({ params }: PageProps) {
 }
 
 export default function Home() {
+  const schemaData = [getOrganizationSchema(), getWebSiteSchema()];
+
   return (
     <main className="flex flex-col min-h-screen bg-[#fafafa]">
+      <StructuredData data={schemaData} />
       <HomeHeader />
       <MainServices />
       <WhyWorkWithUs />

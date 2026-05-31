@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import {
   defaultLanguage,
   isSupportedLanguage,
+  localizePath,
   type SupportedLanguage,
 } from '@/lib/i18n';
 
@@ -42,6 +43,17 @@ export function proxy(request: NextRequest) {
     const redirectUrl = request.nextUrl.clone();
     redirectUrl.pathname = '/sitemap.xml';
     return NextResponse.redirect(redirectUrl);
+  }
+
+  if (pathname.startsWith('/ro/services/')) {
+    const internalPath = pathname.replace(/^\/ro/, '');
+    const localizedPath = localizePath(internalPath, 'ro');
+
+    if (localizedPath !== pathname) {
+      const redirectUrl = request.nextUrl.clone();
+      redirectUrl.pathname = localizedPath;
+      return NextResponse.redirect(redirectUrl);
+    }
   }
 
   if (firstSegment && isSupportedLanguage(firstSegment)) {

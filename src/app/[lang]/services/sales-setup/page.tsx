@@ -7,6 +7,7 @@ import SalesSetupAdvanced from '@/components/sales-setup-components/SalesSetupAd
 import SalesSetupContact from '@/components/sales-setup-components/SalesSetupContact';
 import SalesSetupFAQ from '@/components/sales-setup-components/SalesSetupFAQ';
 import { createPageMetadata } from '@/lib/seo-metadata';
+import { localizePath } from '@/lib/i18n';
 
 type PageProps = {
   params: Promise<{ lang: string }>;
@@ -21,7 +22,7 @@ export default async function SalesSetupPage({ params }: PageProps) {
   const { lang } = await params;
 
   if (lang === 'ro') {
-    redirect('/ro/services/unavailable');
+    redirect(localizePath('/services/unavailable', lang));
   }
 
   return (

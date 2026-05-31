@@ -57,9 +57,9 @@ export const seoMetadata: Record<SeoRouteKey, LocalizedSeoCopy> = {
         'Senior digital strategy, performance marketing, web development, automation, and revenue systems for ambitious teams.',
     },
     ro: {
-      title: 'LightningRevenue - Agentie premium de crestere digitala',
+      title: 'Agentie de Marketing Digital Premium | LightningRevenue',
       description:
-        'Strategie digitala senior, performance marketing, dezvoltare web, automatizari si sisteme de venit pentru echipe ambitioase.',
+        'Agentie de marketing digital premium focusata pe crestere digitala, performance marketing, dezvoltare web si sisteme de venit pentru echipe ambitioase.',
     },
     it: {
       title: 'LightningRevenue - Agenzia premium per la crescita digitale',
@@ -211,9 +211,9 @@ export const seoMetadata: Record<SeoRouteKey, LocalizedSeoCopy> = {
         'Data-driven PPC management, paid search, paid social, conversion tracking, and performance scaling for growth-focused companies.',
     },
     ro: {
-      title: 'Management PPC | LightningRevenue',
+      title: 'Agentie PPC & Promovare Google Ads | LightningRevenue',
       description:
-        'Management PPC bazat pe date, paid search, paid social, tracking de conversii si scalare pentru companii orientate spre crestere.',
+        'Agentie PPC bazata pe date, promovare Google Ads, reclame Facebook Ads, tracking de conversii si scalare pentru companii orientate spre crestere.',
     },
     it: {
       title: 'Gestione PPC | LightningRevenue',
@@ -233,9 +233,9 @@ export const seoMetadata: Record<SeoRouteKey, LocalizedSeoCopy> = {
         'Technical SEO, content architecture, organic growth systems, site performance, and search visibility built for durable acquisition.',
     },
     ro: {
-      title: 'Optimizare SEO | LightningRevenue',
+      title: 'Servicii de Optimizare SEO | Agentie SEO LightningRevenue',
       description:
-        'SEO tehnic, arhitectura de continut, sisteme de crestere organica, performanta site si vizibilitate in cautare pentru achizitie durabila.',
+        'Servicii SEO tehnice, optimizare SEO, arhitectura de continut si sisteme de crestere organica pentru vizibilitate in cautare si achizitie durabila.',
     },
     it: {
       title: 'Ottimizzazione SEO | LightningRevenue',
@@ -255,9 +255,9 @@ export const seoMetadata: Record<SeoRouteKey, LocalizedSeoCopy> = {
         'Social media management, content operations, community systems, brand cadence, and distribution workflows for modern growth teams.',
     },
     ro: {
-      title: 'Social Media Management | LightningRevenue',
+      title: 'Promovare Social Media & Management | LightningRevenue',
       description:
-        'Management social media, operatiuni de continut, sisteme de comunitate, cadenta de brand si workflow-uri de distributie.',
+        'Promovare social media, management retele sociale, operatiuni de continut si workflow-uri de distributie pentru echipe moderne de crestere.',
     },
     it: {
       title: 'Social Media Management | LightningRevenue',
@@ -277,9 +277,9 @@ export const seoMetadata: Record<SeoRouteKey, LocalizedSeoCopy> = {
         'Premium UI/UX design for conversion-focused websites, product interfaces, dashboards, user journeys, and design systems.',
     },
     ro: {
-      title: 'Design UI/UX | LightningRevenue',
+      title: 'Agentie UI/UX & Design Interfata | LightningRevenue',
       description:
-        'Design UI/UX premium pentru website-uri orientate spre conversie, interfete de produs, dashboard-uri, user journeys si design systems.',
+        'Agentie UI/UX premium oferind design de interfata pentru website-uri orientate spre conversie, dashboard-uri si design systems.',
     },
     it: {
       title: 'Design UI/UX | LightningRevenue',
@@ -299,9 +299,9 @@ export const seoMetadata: Record<SeoRouteKey, LocalizedSeoCopy> = {
         'High-performance web development, marketing sites, landing pages, frontend systems, and conversion-focused digital experiences.',
     },
     ro: {
-      title: 'Web design si dezvoltare web | LightningRevenue',
+      title: 'Creare Site Web & Agentie Web Design | LightningRevenue',
       description:
-        'Dezvoltare web performanta, site-uri de marketing, landing pages, sisteme frontend si experiente digitale orientate spre conversie.',
+        'Agentie web design specializata in creare site web, dezvoltare web performanta, landing pages si experiente digitale orientate spre conversie.',
     },
     it: {
       title: 'Web design e sviluppo web | LightningRevenue',
@@ -321,9 +321,9 @@ export const seoMetadata: Record<SeoRouteKey, LocalizedSeoCopy> = {
         'Custom software development, scalable architectures, internal tools, automation layers, and secure business applications.',
     },
     ro: {
-      title: 'Software custom | LightningRevenue',
+      title: 'Dezvoltare Software la Comanda | LightningRevenue',
       description:
-        'Dezvoltare software custom, arhitecturi scalabile, tool-uri interne, layere de automatizare si aplicatii business securizate.',
+        'Servicii de dezvoltare software la comanda, creare aplicatii web, arhitecturi scalabile, layere de automatizare si aplicatii business securizate.',
     },
     it: {
       title: 'Software custom | LightningRevenue',

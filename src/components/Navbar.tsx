@@ -17,6 +17,7 @@ const languages = [
 ];
 
 const languageStorageKey = 'lrvn_language';
+const languageCookieMaxAge = 60 * 60 * 24 * 365;
 
 const isRomanianRestrictedService = (path: string, language: string) =>
   language === 'ro' &&
@@ -96,6 +97,7 @@ export default function Navbar() {
     setSelectedLanguage(language);
     setLanguageOpen(false);
     window.localStorage.setItem(languageStorageKey, language.code);
+    document.cookie = `${languageStorageKey}=${language.code}; Max-Age=${languageCookieMaxAge}; Path=/; SameSite=Lax`;
     router.push(localizePath(targetPath, language.code));
   };
 

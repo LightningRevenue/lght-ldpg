@@ -25,6 +25,13 @@ const routeChangeFrequency: Partial<
   terms: 'yearly',
 };
 
+const unavailableInRomania = new Set<SeoRouteKey>([
+  'expertiseSla',
+  'expertiseAccountManager',
+  'serviceLeadGeneration',
+  'serviceSalesSetup',
+]);
+
 function absoluteUrl(path: string) {
   return new URL(path, siteOrigin).toString();
 }
@@ -34,21 +41,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return Object.entries(seoRoutePaths).flatMap(([routeKey, routePath]) => {
     const key = routeKey as SeoRouteKey;
+    const availableLanguages = supportedLanguages.filter(
+      language => !(language === 'ro' && unavailableInRomania.has(key)),
+    );
     const alternates = Object.fromEntries(
       Object.entries(getLanguageAlternates(key)).map(([language, path]) => [
         language,
         absoluteUrl(path),
-      ]),
+      ]).filter(([language]) => availableLanguages.includes(language as typeof supportedLanguages[number])),
     );
 
-    return supportedLanguages.map(language => ({
-      url: absoluteUrl(localizePath(routePath, language)),
-      lastModified,
-      changeFrequency: routeChangeFrequency[key] || 'monthly',
-      priority: routePriorities[key] || 0.7,
-      alternates: {
-        languages: alternates,
-      },
-    }));
+    return supportedLanguages
+      .filter(language => availableLanguages.includes(language))
+      .map(language => ({
+        url: absoluteUrl(localizePath(routePath, language)),
+        lastModified,
+        changeFrequency: routeChangeFrequency[key] || 'monthly',
+        priority: routePriorities[key] || 0.7,
+        alternates: {
+          languages: alternates,
+        },
+      }));
   });
 }

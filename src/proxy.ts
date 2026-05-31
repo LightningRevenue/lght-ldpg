@@ -38,6 +38,12 @@ export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   const firstSegment = pathname.split('/').filter(Boolean)[0];
 
+  if (pathname === '/sitemap') {
+    const redirectUrl = request.nextUrl.clone();
+    redirectUrl.pathname = '/sitemap.xml';
+    return NextResponse.redirect(redirectUrl);
+  }
+
   if (firstSegment && isSupportedLanguage(firstSegment)) {
     return NextResponse.next();
   }
